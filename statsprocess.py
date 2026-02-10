@@ -5,6 +5,7 @@ import re
 import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+from tqdm import tqdm  # Add tqdm for progress bars
 
 BASE_URL = "http://x2.sjcmc.cn:15960/stats/"
 STATS_DIR = "stats"
@@ -49,10 +50,7 @@ def get_player_name(uuid):
 def process_player(filename):
     uuid = filename.replace(".json", "")
     json_path = os.path.join(STATS_DIR, filename)
-    # img_path = os.path.join(IMAGE_DIR, f"{uuid}.png") # No longer used
     
-    print(f"Processing {uuid}...")
-
     # 1. Download/Load JSON
     data = None
     try:
@@ -155,14 +153,12 @@ def process_player(filename):
         }
     }
 
-# Process in parallel
-# Reduce max_workers to avoid hitting API limits too hard locally
+# Process in parallel with progress bar
 results = []
-with ThreadPoolExecutor(max_workers=4) as executor:
-    # Process only first 50 for testing? No, user wants all.
-    # But for a script I am writing for them, I should let them run it.
-    # I will process ALL found files.
-    results = list(executor.map(process_player, files))
+if files:
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        # Use tqdm to show progress
+        results = list(tqdm(executor.map(process_player, files), total=len(files), desc="Processing players"))
 
 results = [r for r in results if r is not None]
 
