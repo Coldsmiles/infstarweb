@@ -9,11 +9,9 @@ from tqdm import tqdm  # Add tqdm for progress bars
 
 BASE_URL = "http://x2.sjcmc.cn:15960/stats/"
 STATS_DIR = "stats"
-IMAGE_DIR = os.path.join(STATS_DIR, "images")
 
 # Ensure directories exist
 os.makedirs(STATS_DIR, exist_ok=True)
-os.makedirs(IMAGE_DIR, exist_ok=True)
 
 print("Fetching file list...")
 try:
@@ -114,6 +112,24 @@ def process_player(filename):
 
     walk_fmt = format_dist(walk_cm)
 
+    # Play Time (1 tick = 1/20 second)
+    play_time_ticks = custom.get('minecraft:play_time', 0)
+    
+    def format_time(ticks):
+        seconds = ticks / 20
+        if seconds < 60:
+            return f"{seconds:.3f} 秒"
+        minutes = seconds / 60
+        if minutes < 60:
+            return f"{minutes:.3f} 分钟"
+        hours = minutes / 60
+        if hours < 24:
+            return f"{hours:.3f} 小时"
+        days = hours / 24
+        return f"{days:.3f} 天"
+    
+    play_time_fmt = format_time(play_time_ticks)
+
     # Mined
     mined = stats.get('minecraft:mined', {})
     total_mined = sum(mined.values())
@@ -133,7 +149,9 @@ def process_player(filename):
         'walk_cm': walk_cm,
         'total_mined': total_mined,
         'total_placed': total_placed,
-        'total_deaths': total_deaths
+        'total_deaths': total_deaths,
+        'play_time_fmt': play_time_fmt,
+        'play_time_ticks': play_time_ticks
     }
 
     # Save
@@ -149,7 +167,9 @@ def process_player(filename):
             'walk_raw': walk_cm,
             'mined': total_mined,
             'placed': total_placed,
-            'deaths': total_deaths
+            'deaths': total_deaths,
+            'play_time_fmt': play_time_fmt,
+            'play_time_raw': play_time_ticks
         }
     }
 

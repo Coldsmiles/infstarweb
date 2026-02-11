@@ -83,6 +83,10 @@ function renderLeaderboards() {
                 if (key === 'walk_fmt') valA = a.stats.walk_raw;
                 if (key === 'walk_fmt') valB = b.stats.walk_raw;
                 
+                // Special case for play_time which has raw sorting value
+                if (key === 'play_time_fmt') valA = a.stats.play_time_raw;
+                if (key === 'play_time_fmt') valB = b.stats.play_time_raw;
+                
                 return valB - valA;
             })
             .slice(0, 4); // Top 4
@@ -136,6 +140,10 @@ function renderLeaderboards() {
     // 4. Deaths (stats.deaths)
     const topDeaths = getTop('deaths');
     renderCard('lb-deaths', topDeaths, p => p.stats.deaths);
+
+    // 5. Play Time (stats.play_time_raw)
+    const topPlayTime = getTop('play_time_fmt'); // uses play_time_raw internally
+    renderCard('lb-playtime', topPlayTime, p => p.stats.play_time_fmt);
 }
 
 function renderPlayerGrid(reset = false) {
@@ -220,6 +228,7 @@ function openModal(player) {
     document.getElementById('modal-placed').innerText = player.stats.placed.toLocaleString();
     document.getElementById('modal-mined').innerText = player.stats.mined.toLocaleString();
     document.getElementById('modal-deaths').innerText = player.stats.deaths;
+    document.getElementById('modal-playtime').innerText = player.stats.play_time_fmt;
 
     modal.style.display = "flex";
 }
