@@ -144,6 +144,10 @@ function renderLeaderboards() {
     // 5. Play Time (stats.play_time_raw)
     const topPlayTime = getTop('play_time_fmt'); // uses play_time_raw internally
     renderCard('lb-playtime', topPlayTime, p => p.stats.play_time_fmt);
+
+    // 6. Kills (stats.kills)
+    const topKills = getTop('kills');
+    renderCard('lb-kills', topKills, p => p.stats.kills);
 }
 
 function renderPlayerGrid(reset = false) {
@@ -228,6 +232,7 @@ function openModal(player) {
     document.getElementById('modal-placed').innerText = player.stats.placed.toLocaleString();
     document.getElementById('modal-mined').innerText = player.stats.mined.toLocaleString();
     document.getElementById('modal-deaths').innerText = player.stats.deaths;
+    document.getElementById('modal-kills').innerText = player.stats.kills;
     document.getElementById('modal-playtime').innerText = player.stats.play_time_fmt;
 
     modal.style.display = "flex";

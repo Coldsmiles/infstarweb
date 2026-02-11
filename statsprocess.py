@@ -142,6 +142,10 @@ def process_player(filename):
     killed_by = stats.get('minecraft:killed_by', {})
     total_deaths = sum(killed_by.values())
 
+    # Kills (Killed)
+    killed = stats.get('minecraft:killed', {})
+    total_kills = sum(killed.values())
+
     # Inject into JSON
     data['extra'] = {
         'player_name': player_name,
@@ -150,6 +154,7 @@ def process_player(filename):
         'total_mined': total_mined,
         'total_placed': total_placed,
         'total_deaths': total_deaths,
+        'total_kills': total_kills,
         'play_time_fmt': play_time_fmt,
         'play_time_ticks': play_time_ticks
     }
@@ -168,19 +173,19 @@ def process_player(filename):
             'mined': total_mined,
             'placed': total_placed,
             'deaths': total_deaths,
+            'kills': total_kills,
             'play_time_fmt': play_time_fmt,
             'play_time_raw': play_time_ticks
         }
     }
 
-# Process in parallel with progress bar
+# Process sequentially with progress bar
 results = []
 if files:
-    with ThreadPoolExecutor(max_workers=4) as executor:
-        # Use tqdm to show progress
-        results = list(tqdm(executor.map(process_player, files), total=len(files), desc="Processing players"))
-
-results = [r for r in results if r is not None]
+    for filename in tqdm(files, desc="Processing players"):
+        result = process_player(filename)
+        if result is not None:
+            results.append(result)
 
 # Sort by name perhaps? Or just raw list.
 results.sort(key=lambda x: x['name'])
