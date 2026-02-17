@@ -277,6 +277,25 @@
             overflow-y: auto;
         }
 
+        /* Custom Scrollbar for Modal */
+        .modal-content.expanded-modal::-webkit-scrollbar {
+            width: 6px; /* Thinner width */
+        }
+
+        .modal-content.expanded-modal::-webkit-scrollbar-track {
+            background: transparent; /* Transparent track */
+            margin: 10px 0; /* Add margin to top/bottom */
+        }
+
+        .modal-content.expanded-modal::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.15); /* Subtle color */
+            border-radius: 10px; /* Rounded corners */
+        }
+
+        .modal-content.expanded-modal::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.25); /* Darker on hover */
+        }
+
         .modal-top-section {
             display: flex;
             flex-wrap: wrap;
