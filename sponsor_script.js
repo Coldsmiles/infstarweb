@@ -3,9 +3,13 @@ let grandTotal = 0;
 let filterState = { search: '', project: 'all' };
 
 document.addEventListener('DOMContentLoaded', () => {
+    try {
+        setupUI();
+    } catch (e) {
+        console.error("UI Setup failed", e);
+    }
     fetchSponsorsData();
     setupListeners();
-    setupUI();
 });
 
 function setupUI() {
@@ -53,11 +57,13 @@ function setupUI() {
 
     if (modal && btn) {
         btn.addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent accidental form submission
+            e.preventDefault();
             modal.style.display = "flex";
             // Trigger reflow
             void modal.offsetWidth; 
-            modal.classList.add('show');
+            requestAnimationFrame(() => {
+                modal.classList.add('show');
+            });
         });
     }
 
