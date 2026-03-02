@@ -88,6 +88,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (step === currentStep) {
                 indicator.classList.add('active');
                 indicator.classList.remove('completed');
+                
+                // Scroll into view on mobile
+                if (window.innerWidth <= 800) {
+                    indicator.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'nearest', 
+                        inline: 'center' 
+                    });
+                }
             } else if (step < currentStep) {
                 indicator.classList.add('completed');
                 indicator.classList.remove('active');
@@ -303,14 +312,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 title: '加入服务器',
                 desc: `点击“多人游戏” -> “添加服务器”。<br>
                        服务器名称：<span class="highlight-text">白鹿原</span><br>
-                       服务器地址：
+                       输入以下服务器地址，点击“完成”并双击服务器即可加入。
                        <div class="server-address-box">
                            <code id="server-address">mcpure.lunadeer.cn</code>
                            <button class="btn-copy" onclick="navigator.clipboard.writeText('mcpure.lunadeer.cn').then(() => { this.innerHTML = '<i class=\\'fas fa-check\\'></i> 已复制'; setTimeout(() => this.innerHTML = '<i class=\\'fas fa-copy\\'></i> 复制', 2000); })">
                                <i class="fas fa-copy"></i> 复制
                            </button>
                        </div>
-                       点击“完成”并双击服务器即可加入。`
+                       `
             }
         ],
         ios: [
@@ -329,14 +338,14 @@ document.addEventListener('DOMContentLoaded', () => {
             {
                 title: '加入服务器',
                 desc: `进入主界面后，选择 Multiplayer（多人游戏） -> Add Server（添加服务器）。<br>
-                       Address（地址）：
+                       Address（地址）填写以下内容，点击 Done 并加入。
                        <div class="server-address-box">
                            <code id="server-address-ios">mcpure.lunadeer.cn</code>
                            <button class="btn-copy" onclick="navigator.clipboard.writeText('mcpure.lunadeer.cn').then(() => { this.innerHTML = '<i class=\\'fas fa-check\\'></i> 已复制'; setTimeout(() => this.innerHTML = '<i class=\\'fas fa-copy\\'></i> 复制', 2000); })">
                                <i class="fas fa-copy"></i>
                            </button>
                        </div>
-                       点击 Done 并加入。`
+                       `
             }
         ],
         android: [
@@ -355,14 +364,14 @@ document.addEventListener('DOMContentLoaded', () => {
             {
                 title: '加入服务器',
                 desc: `启动游戏后，点击 Multiplayer（多人游戏） -> Add Server（添加服务器）。<br>
-                       Address（地址）：
+                       Address（地址）填写以下内容，点击 Done 并加入。
                        <div class="server-address-box">
                            <code id="server-address-android">mcpure.lunadeer.cn</code>
                            <button class="btn-copy" onclick="navigator.clipboard.writeText('mcpure.lunadeer.cn').then(() => { this.innerHTML = '<i class=\\'fas fa-check\\'></i> 已复制'; setTimeout(() => this.innerHTML = '<i class=\\'fas fa-copy\\'></i> 复制', 2000); })">
                                <i class="fas fa-copy"></i> 复制
                            </button>
                        </div>
-                       点击 Done 并加入。`
+                       `
             }
         ]
     };
