@@ -26,7 +26,12 @@
         <!-- Controls -->
         <div class="controls-section">
             <div class="controls-header-row">
-                <h2 class="section-title">设施列表</h2>
+                <div class="title-with-action">
+                    <h2 class="section-title">设施列表</h2>
+                    <button class="btn-add-facility" id="btn-add-facility">
+                        <i class="fas fa-plus"></i> 新增设施
+                    </button>
+                </div>
                 <div class="search-box">
                     <i class="fas fa-search"></i>
                     <input type="text" id="facility-search" placeholder="搜索设施名称...">
@@ -71,7 +76,12 @@
         <div class="modal-content facility-modal-content">
             <span class="close-modal">&times;</span>
             <div class="modal-header">
-                <h3 class="modal-title" id="modal-title">设施名称</h3>
+                <div class="modal-title-row">
+                    <h3 class="modal-title" id="modal-title">设施名称</h3>
+                    <button class="btn-edit-facility" id="btn-edit-facility" title="编辑此设施">
+                        <i class="fas fa-pen"></i> 编辑
+                    </button>
+                </div>
                 <div class="modal-badges" id="modal-badges">
                     <!-- Badges injected by JS -->
                 </div>
@@ -112,6 +122,126 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Editor Modal -->
+    <div id="editor-modal" class="modal">
+        <div class="modal-content editor-modal-content">
+            <span class="close-editor-modal">&times;</span>
+            <div class="editor-modal-header">
+                <h3><i class="fas fa-tools"></i> 设施编辑器</h3>
+            </div>
+            <div class="editor-layout">
+                <!-- Left: Preview -->
+                <div class="editor-preview">
+                    <div class="editor-panel-title"><i class="fas fa-eye"></i> 实时预览</div>
+                    <div class="editor-preview-content" id="editor-preview-area"></div>
+                </div>
+                <!-- Right: Editor Form -->
+                <div class="editor-form">
+                    <div class="editor-panel-title"><i class="fas fa-edit"></i> 编辑内容</div>
+                    <div class="editor-form-scroll">
+                        <div class="form-group">
+                            <label for="editor-title">设施名称</label>
+                            <input type="text" id="editor-title" placeholder="输入设施名称...">
+                        </div>
+                        <div class="form-group">
+                            <label for="editor-intro">设施简介</label>
+                            <textarea id="editor-intro" placeholder="输入设施简介..." rows="3"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editor-type">类型</label>
+                                <select id="editor-type">
+                                    <option value="resource">资源类</option>
+                                    <option value="xp">经验类</option>
+                                    <option value="infrastructure">基础设施</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editor-status">状态</label>
+                                <select id="editor-status">
+                                    <option value="online">正常运行</option>
+                                    <option value="maintenance">维护中</option>
+                                    <option value="offline">暂时失效</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editor-dimension">维度</label>
+                                <select id="editor-dimension">
+                                    <option value="overworld">主世界</option>
+                                    <option value="nether">下界</option>
+                                    <option value="end">末地</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row coords-row">
+                            <div class="form-group">
+                                <label for="editor-x">X 坐标</label>
+                                <input type="number" id="editor-x" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="editor-y">Y 坐标</label>
+                                <input type="number" id="editor-y" placeholder="64">
+                            </div>
+                            <div class="form-group">
+                                <label for="editor-z">Z 坐标</label>
+                                <input type="number" id="editor-z" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>贡献/维护人员</label>
+                            <div class="tags-input-wrapper" id="editor-contributors-wrapper">
+                                <div class="tags-list" id="editor-contributors-tags"></div>
+                                <input type="text" id="editor-contributor-input" placeholder="输入名称后按回车添加...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>使用说明</label>
+                            <div class="sortable-list" id="editor-instructions-list"></div>
+                            <div class="add-item-row">
+                                <button type="button" class="add-item-btn" data-target="instructions" data-type="text">
+                                    <i class="fas fa-plus"></i> 添加文字
+                                </button>
+                                <button type="button" class="add-item-btn" data-target="instructions" data-type="image">
+                                    <i class="fas fa-image"></i> 添加图片
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>注意事项</label>
+                            <div class="sortable-list" id="editor-notes-list"></div>
+                            <div class="add-item-row">
+                                <button type="button" class="add-item-btn" data-target="notes" data-type="text">
+                                    <i class="fas fa-plus"></i> 添加文字
+                                </button>
+                                <button type="button" class="add-item-btn" data-target="notes" data-type="image">
+                                    <i class="fas fa-image"></i> 添加图片
+                                </button>
+                            </div>
+                        </div>
+                        <div class="editor-actions">
+                            <button type="button" class="btn-save-facility" id="btn-save-facility">
+                                <i class="fas fa-save"></i> 生成 JSON
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JSON Output Modal -->
+    <div id="json-output-modal" class="modal">
+        <div class="modal-content json-output-content">
+            <span class="close-json-modal">&times;</span>
+            <h3><i class="fas fa-code"></i> 生成完成</h3>
+            <p class="json-output-hint">请复制以下 JSON 内容，发送给服主以更新到网站上。</p>
+            <textarea id="json-output" readonly></textarea>
+            <button type="button" class="btn-copy-json" id="btn-copy-json">
+                <i class="fas fa-copy"></i> 复制到剪贴板
+            </button>
         </div>
     </div>
 
