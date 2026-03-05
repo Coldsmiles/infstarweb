@@ -1,7 +1,7 @@
 [
     {
         "title": "72K刷冰机",
-        "intro": "解决生电的冰需求及便携水需求。原视频BV1qPhWzdEwU",
+        "intro": "产速约 72K 块/时的刷冰机，满足生电用冰及便携水源需求。",
         "type": "resource",
         "dimension": "overworld",
         "status": "online",
@@ -14,19 +14,23 @@
         "instructions": [
             {
                 "type": "text",
-                "content": "开机后手持效率3钻石镐站在坑里挖冰。盒装冰在背后的箱子里。"
+                "content": "开机后，手持效率 III 钻石镐站在坑内持续挖冰。盒装冰存放于机器背后的箱子中。"
             }
         ],
         "notes": [
             {
                 "type": "text",
-                "content": "使用前查看告示牌。指示灯熄灭前请勿离开。"
+                "content": "使用前请仔细阅读告示牌说明。指示灯熄灭前请勿离开。"
+            },
+            {
+                "type": "text",
+                "content": "参考视频：BV1qPhWzdEwU"
             }
         ]
     },
     {
         "title": "60W鱼塔",
-        "intro": "本机器主要用来满足海晶灯需求。除海晶灯外本机器还收集海晶碎片。",
+        "intro": "产速约 60W 条/时的鱼塔，主要用于获取海晶灯，同时产出海晶碎片。",
         "type": "resource",
         "dimension": "overworld",
         "status": "online",
@@ -42,21 +46,115 @@
         "instructions": [
             {
                 "type": "text",
-                "content": "本机器只需要挂机即可。"
+                "content": "本机器仅需挂机，无需其他操作。"
             },
             {
                 "type": "text",
-                "content": "主世界挂机点坐标为：13984,162,7296"
+                "content": "主世界挂机点坐标：13984, 162, 7296"
             },
             {
                 "type": "text",
-                "content": "下界挂机点坐标为：1745,~,896。"
-            },
-            {
-                "type": "text",
-                "content": "收集原视频BV1g142167tJ"
+                "content": "下界挂机点坐标：1745, ~, 896"
             }
         ],
-        "notes": []
+        "notes": [
+            {
+                "type": "text",
+                "content": "参考视频：BV1g142167tJ"
+            }
+        ]
+    },
+    {
+        "title": "【无上限】末地混凝土工厂",
+        "intro": "配套 TNT 动量刷沙机使用的末地混凝土工厂，可处理 10W～57.6W/时的产量。",
+        "type": "resource",
+        "dimension": "end",
+        "status": "online",
+        "coordinates": {
+            "x": 0,
+            "y": 50,
+            "z": 0
+        },
+        "contributors": [
+            "桥佳的一车面包人（可自来认领）",
+            "Huakou",
+            "Clincded_Xsa",
+            "Thumper0327"
+        ],
+        "instructions": [
+            {
+                "type": "text",
+                "content": "每次仅能处理一种物品，请提前选好目标方块再开始生产。"
+            },
+            {
+                "type": "text",
+                "content": "大宗仓库内的方块全服共享、取用无上限，直接从大箱子中取盒装物资即可。"
+            }
+        ],
+        "notes": [
+            {
+                "type": "text",
+                "content": "配套刷沙机请参考桥佳的刷沙机，或咨询 Clincded_Xsa。"
+            },
+            {
+                "type": "text",
+                "content": "缺货或有疑问请群内 @维护人员。"
+            }
+        ]
+    },
+    {
+        "title": "【无上限】猪灵交易所",
+        "intro": "承包全服石英用度的猪灵交易机，全产物（含石英）取用无上限。",
+        "type": "resource",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": -7815,
+            "y": 151,
+            "z": 6112
+        },
+        "contributors": [
+            "Huakou",
+            "Thumper0327"
+        ],
+        "instructions": [],
+        "notes": [
+            {
+                "type": "text",
+                "content": "除石英外的其余产物常年处于爆仓状态，大宗仓库物资可随意取用。"
+            },
+            {
+                "type": "text",
+                "content": "缺货请群内 @维护人员。"
+            }
+        ]
+    },
+    {
+        "title": "【无上限】船吸收集仓库",
+        "intro": "萌新友好的船吸式收集仓库，支持单人挂机，取用无上限。",
+        "type": "resource",
+        "dimension": "nether",
+        "status": "online",
+        "coordinates": {
+            "x": -602,
+            "y": 144,
+            "z": -108
+        },
+        "contributors": [
+            "Huakou",
+            "Thumper0327"
+        ],
+        "instructions": [
+            {
+                "type": "text",
+                "content": "在主世界挂机点站立不动即可，无需在下界挂机。"
+            }
+        ],
+        "notes": [
+            {
+                "type": "text",
+                "content": "火药、骨块、箭矢常年爆仓，萤石、红石存量充足。"
+            }
+        ]
     }
 ]
