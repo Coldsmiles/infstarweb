@@ -5,7 +5,7 @@ Allow: /
 Disallow: /stats/*.json
 
 # Sitemap
-Sitemap: https://mcpure.lunadeer.cn/sitemap.xml
+Sitemap: https://bailuyuan.lunadeer.cn/sitemap.xml
 
 # 主要搜索引擎爬虫
 User-agent: Googlebot
