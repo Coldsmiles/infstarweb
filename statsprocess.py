@@ -1,6 +1,8 @@
 import os
 import json
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -10,12 +12,23 @@ from tqdm import tqdm  # Add tqdm for progress bars
 BASE_URL = "http://x2.sjcmc.cn:15960/stats/"
 STATS_DIR = "stats"
 
+# Create a session that bypasses system proxy and retries on failure
+session = requests.Session()
+session.trust_env = False  # Ignore HTTP_PROXY / HTTPS_PROXY env vars
+retry_strategy = Retry(
+    total=3,
+    backoff_factor=1,
+    status_forcelist=[429, 500, 502, 503, 504],
+)
+session.mount("http://", HTTPAdapter(max_retries=retry_strategy))
+session.mount("https://", HTTPAdapter(max_retries=retry_strategy))
+
 # Ensure directories exist
 os.makedirs(STATS_DIR, exist_ok=True)
 
 print("Fetching file list...")
 try:
-    response = requests.get(BASE_URL, timeout=10)
+    response = session.get(BASE_URL, timeout=10)
     response.raise_for_status()
     content = response.text
     # Regex for UUID.json
@@ -29,7 +42,7 @@ except Exception as e:
 def get_player_name(uuid):
     # Try Ashcon first
     try:
-        r = requests.get(f"https://api.ashcon.app/mojang/v2/user/{uuid}", timeout=5)
+        r = session.get(f"https://api.ashcon.app/mojang/v2/user/{uuid}", timeout=5)
         if r.status_code == 200:
             return r.json().get('username')
     except:
@@ -37,7 +50,7 @@ def get_player_name(uuid):
     
     # Try Mojang Session
     try:
-        r = requests.get(f"https://sessionserver.mojang.com/session/minecraft/profile/{uuid}", timeout=5)
+        r = session.get(f"https://sessionserver.mojang.com/session/minecraft/profile/{uuid}", timeout=5)
         if r.status_code == 200:
             return r.json().get('name')
     except:
@@ -54,7 +67,7 @@ def process_player(filename):
     try:
         # Check if we already have it locally and it's valid, maybe skip download? 
         # User implies fetching updates, so we download.
-        r = requests.get(BASE_URL + filename, timeout=10)
+        r = session.get(BASE_URL + filename, timeout=10)
         if r.status_code == 200:
             data = r.json()
         else:
