@@ -34,6 +34,7 @@ jobs:
 
       - name: Run statsprocess.py
         env:
+          STATS_BASE_URL: ${{ secrets.STATS_BASE_URL }}
           STATS_USER: ${{ secrets.STATS_USER }}
           STATS_PASS: ${{ secrets.STATS_PASS }}
         run: python statsprocess.py
