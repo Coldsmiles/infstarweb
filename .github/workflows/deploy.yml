@@ -38,10 +38,20 @@ jobs:
           STATS_PASS: ${{ secrets.STATS_PASS }}
         run: python statsprocess.py
 
+      - name: Prepare Pages artifact
+        run: |
+          mkdir -p _site
+          rsync -a --delete \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude 'README.md' \
+            --exclude 'statsprocess.py' \
+            ./ ./_site/
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: ./_site
 
   deploy:
     needs: build

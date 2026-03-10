@@ -1,32 +1,50 @@
 import os
 import json
+import threading
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import re
-import time
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from tqdm import tqdm  # Add tqdm for progress bars
 
-BASE_URL = "http://x2.sjcmc.cn:15960/stats/"
 STATS_DIR = "stats"
+MAX_WORKERS = max(4, min(16, int(os.environ.get("STATS_MAX_WORKERS", (os.cpu_count() or 4) * 2))))
 
 # HTTP Basic Auth for BASE_URL (from environment variables)
+BASE_URL = os.environ.get("STATS_BASE_URL", "")
 STATS_USER = os.environ.get("STATS_USER", "")
 STATS_PASS = os.environ.get("STATS_PASS", "")
 BASE_AUTH = (STATS_USER, STATS_PASS) if STATS_USER else None
 
-# Create a session that bypasses system proxy and retries on failure
-session = requests.Session()
-session.trust_env = False  # Ignore HTTP_PROXY / HTTPS_PROXY env vars
 retry_strategy = Retry(
     total=3,
     backoff_factor=1,
     status_forcelist=[429, 500, 502, 503, 504],
 )
-session.mount("http://", HTTPAdapter(max_retries=retry_strategy))
-session.mount("https://", HTTPAdapter(max_retries=retry_strategy))
+thread_local = threading.local()
+
+
+def create_session():
+    session = requests.Session()
+    session.trust_env = False  # Ignore HTTP_PROXY / HTTPS_PROXY env vars
+    adapter = HTTPAdapter(
+        max_retries=retry_strategy,
+        pool_connections=MAX_WORKERS,
+        pool_maxsize=MAX_WORKERS,
+    )
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
+
+
+def get_session():
+    session = getattr(thread_local, "session", None)
+    if session is None:
+        session = create_session()
+        thread_local.session = session
+    return session
 
 if BASE_AUTH:
     print(f"Using authentication for BASE_URL (user: {STATS_USER})")
@@ -37,47 +55,87 @@ else:
 os.makedirs(STATS_DIR, exist_ok=True)
 
 print("Fetching file list...")
+fetch_failed = False
 try:
-    response = session.get(BASE_URL, timeout=10, auth=BASE_AUTH)
+    response = get_session().get(BASE_URL, timeout=10, auth=BASE_AUTH)
     response.raise_for_status()
     content = response.text
     # Regex for UUID.json
-    files = re.findall(r'href="([0-9a-f-]{36}\.json)"', content)
-    files = list(set(files))
+    files = sorted(set(re.findall(r'href="([0-9a-f-]{36}\.json)"', content)))
     print(f"Found {len(files)} player stats files.")
 except Exception as e:
     print(f"Error fetching file list: {e}")
     files = []
+    fetch_failed = True
+
+
+def load_name_cache():
+    summary_path = os.path.join(STATS_DIR, 'summary.json')
+    if not os.path.exists(summary_path):
+        return {}
+
+    try:
+        with open(summary_path, 'r', encoding='utf-8') as f:
+            summary = json.load(f)
+    except Exception:
+        return {}
+
+    return {
+        player.get('uuid'): player.get('name')
+        for player in summary.get('players', [])
+        if player.get('uuid') and player.get('name') and player.get('name') != "Unknown"
+    }
+
 
 def get_player_name(uuid):
     # Try Ashcon first
     try:
-        r = session.get(f"https://api.ashcon.app/mojang/v2/user/{uuid}", timeout=5)
+        r = get_session().get(f"https://api.ashcon.app/mojang/v2/user/{uuid}", timeout=5)
         if r.status_code == 200:
             return r.json().get('username')
-    except:
+    except Exception:
         pass
     
     # Try Mojang Session
     try:
-        r = session.get(f"https://sessionserver.mojang.com/session/minecraft/profile/{uuid}", timeout=5)
+        r = get_session().get(f"https://sessionserver.mojang.com/session/minecraft/profile/{uuid}", timeout=5)
         if r.status_code == 200:
             return r.json().get('name')
-    except:
+    except Exception:
         pass
     
     return "Unknown"
 
-def process_player(filename):
+
+def format_dist(cm):
+    m = cm / 100
+    if m < 1000:
+        return f"{m:.1f} m"
+    return f"{m / 1000:.2f} km"
+
+
+def format_time(ticks):
+    seconds = ticks / 20
+    if seconds < 60:
+        return f"{seconds:.3f} 秒"
+    minutes = seconds / 60
+    if minutes < 60:
+        return f"{minutes:.3f} 分钟"
+    hours = minutes / 60
+    if hours < 24:
+        return f"{hours:.3f} 小时"
+    days = hours / 24
+    return f"{days:.3f} 天"
+
+
+def process_player(filename, name_cache):
     uuid = filename.replace(".json", "")
     json_path = os.path.join(STATS_DIR, filename)
     
     # 1. Download/Load JSON
     data = None
     try:
-        # Check if we already have it locally and it's valid, maybe skip download? 
-        # User implies fetching updates, so we download.
-        r = session.get(BASE_URL + filename, timeout=10, auth=BASE_AUTH)
+        r = get_session().get(BASE_URL + filename, timeout=10, auth=BASE_AUTH)
         if r.status_code == 200:
             data = r.json()
         else:
@@ -91,26 +149,10 @@ def process_player(filename):
         return None
 
     # 2. Get Name
-    # We can check if name is already in the processing file to avoid API calls if scraping repeatedly?
-    # For this task, we assume we need to fetch it.
-    # To save API calls, we could check if we have a saved version with a name.
-    player_name = "Unknown"
-    
-    # Check if 'extra' exists in downloaded data (unlikely if strictly from server)
-    # But checking if we have a local cache of this file with a name is smart
-    if os.path.exists(json_path):
-        try:
-            with open(json_path, 'r', encoding='utf-8') as f:
-                local_data = json.load(f)
-                if 'extra' in local_data and local_data['extra'].get('player_name') != "Unknown":
-                    player_name = local_data['extra']['player_name']
-        except:
-            pass
+    player_name = name_cache.get(uuid, "Unknown")
 
     if player_name == "Unknown":
         player_name = get_player_name(uuid)
-        # Sleep slightly to be nice to APIs if meaningful massive parallel
-        time.sleep(0.1)
 
     # 3. Download Avatar - SKIPPED to avoid rate limits
     # The frontend will handle dynamic loading of avatars using Minotar/Crafatar URLs.
@@ -122,35 +164,15 @@ def process_player(filename):
     # Handle both modern ':' and potentially flattened or different versions if necessary, 
     # but usually proper JSON has "minecraft:custom"
     # "minecraft:walk_one_cm"
-    
+
     custom = stats.get('minecraft:custom', {})
     walk_cm = custom.get('minecraft:walk_one_cm', 0)
-    
-    def format_dist(cm):
-        m = cm / 100
-        if m < 1000:
-            return f"{m:.1f} m"
-        else:
-            return f"{m/1000:.2f} km"
 
     walk_fmt = format_dist(walk_cm)
 
     # Play Time (1 tick = 1/20 second)
     play_time_ticks = custom.get('minecraft:play_time', 0)
-    
-    def format_time(ticks):
-        seconds = ticks / 20
-        if seconds < 60:
-            return f"{seconds:.3f} 秒"
-        minutes = seconds / 60
-        if minutes < 60:
-            return f"{minutes:.3f} 分钟"
-        hours = minutes / 60
-        if hours < 24:
-            return f"{hours:.3f} 小时"
-        days = hours / 24
-        return f"{days:.3f} 天"
-    
+
     play_time_fmt = format_time(play_time_ticks)
 
     # Mined
@@ -202,13 +224,28 @@ def process_player(filename):
         }
     }
 
-# Process sequentially with progress bar
+
+name_cache = load_name_cache()
+
 results = []
 if files:
-    for filename in tqdm(files, desc="Processing players"):
-        result = process_player(filename)
-        if result is not None:
-            results.append(result)
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        future_map = {
+            executor.submit(process_player, filename, name_cache): filename
+            for filename in files
+        }
+        for future in tqdm(as_completed(future_map), total=len(future_map), desc="Processing players"):
+            try:
+                result = future.result()
+            except Exception as e:
+                print(f"Worker failed for {future_map[future]}: {e}")
+                continue
+            if result is not None:
+                results.append(result)
+
+if fetch_failed:
+    print("Skipping summary update because file list fetch failed.")
+    raise SystemExit(1)
 
 # Sort by name perhaps? Or just raw list.
 results.sort(key=lambda x: x['name'])
