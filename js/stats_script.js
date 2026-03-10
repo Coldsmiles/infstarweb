@@ -275,9 +275,13 @@ function renderDetailsAccordion(statsObj) {
         return a.localeCompare(b);
     });
 
+    // Threshold for showing search filter
+    const SEARCH_THRESHOLD = 20;
+
     sortedKeys.forEach(catKey => {
         const subStats = statsObj[catKey];
-        if (Object.keys(subStats).length === 0) return;
+        const itemCount = Object.keys(subStats).length;
+        if (itemCount === 0) return;
 
         const catInfo = categoryMap[catKey] || { name: formatKey(catKey), icon: 'fa-folder' };
         
@@ -285,17 +289,37 @@ function renderDetailsAccordion(statsObj) {
         const item = document.createElement('div');
         item.className = 'accordion-item';
         
-        // Header
+        // Header with item count badge
         const header = document.createElement('div');
         header.className = 'accordion-header';
         header.innerHTML = `
-            <span><i class="fas ${catInfo.icon} icon"></i> ${catInfo.name}</span>
+            <span><i class="fas ${catInfo.icon} icon"></i> ${catInfo.name}<span class="item-count">${itemCount}</span></span>
             <i class="fas fa-chevron-down arrow"></i>
         `;
         
         // Content
         const content = document.createElement('div');
         content.className = 'accordion-content';
+
+        // Search filter for large categories
+        let searchInput = null;
+        let noResults = null;
+        if (itemCount >= SEARCH_THRESHOLD) {
+            const searchWrapper = document.createElement('div');
+            searchWrapper.className = 'detail-search-wrapper';
+            searchWrapper.innerHTML = '<i class="fas fa-search"></i>';
+            searchInput = document.createElement('input');
+            searchInput.type = 'text';
+            searchInput.className = 'detail-search';
+            searchInput.placeholder = '搜索条目...';
+            searchWrapper.appendChild(searchInput);
+            content.appendChild(searchWrapper);
+
+            noResults = document.createElement('div');
+            noResults.className = 'detail-no-results';
+            noResults.textContent = '没有匹配的条目';
+            content.appendChild(noResults);
+        }
         
         // Grid for stats
         const grid = document.createElement('div');
@@ -304,15 +328,13 @@ function renderDetailsAccordion(statsObj) {
         // Sort sub-items by value descending
         const subItems = Object.entries(subStats).sort((a, b) => b[1] - a[1]);
         
-        subItems.forEach(([k, v]) => {
+        subItems.forEach(([k, v], index) => {
             let label = formatKey(k);
             let val = v.toLocaleString();
             
             // Special formatting for time/distance in 'custom'
             if (catKey === 'minecraft:custom') {
                 if (k.includes('time') || k.includes('minute')) {
-                     // ticks to hours/min? 
-                     // Assuming 'play_time' is ticks (1/20s)
                      if (k.includes('play_time') || k.includes('time_since')) {
                         const sec = v / 20;
                         if (sec > 3600) val = (sec/3600).toFixed(1) + ' h';
@@ -320,21 +342,43 @@ function renderDetailsAccordion(statsObj) {
                         else val = sec.toFixed(0) + ' s';
                      }
                 }
-                if (k.includes('cmt') || k.includes('one_cm')) { // one_cm
+                if (k.includes('cmt') || k.includes('one_cm')) {
                      const m = v / 100;
                      if (m > 1000) val = (m/1000).toFixed(2) + ' km';
                      else val = m.toFixed(1) + ' m';
                 }
             }
 
+            // Rank class for top 3
+            let rankClass = '';
+            if (index === 0) rankClass = ' rank-1';
+            else if (index === 1) rankClass = ' rank-2';
+            else if (index === 2) rankClass = ' rank-3';
+
             const statDiv = document.createElement('div');
-            statDiv.className = 'detail-stat-item';
+            statDiv.className = 'detail-stat-item' + rankClass;
+            statDiv.dataset.label = label.toLowerCase();
             statDiv.innerHTML = `
-                <span class="detail-stat-label" title="${label}">${label}</span>
                 <span class="detail-stat-value">${val}</span>
+                <span class="detail-stat-label" title="${label}">${label}</span>
             `;
             grid.appendChild(statDiv);
         });
+
+        // Wire up search filter
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase().trim();
+                const items = grid.querySelectorAll('.detail-stat-item');
+                let visible = 0;
+                items.forEach(el => {
+                    const match = !query || el.dataset.label.includes(query);
+                    el.classList.toggle('hidden', !match);
+                    if (match) visible++;
+                });
+                noResults.style.display = visible === 0 ? 'block' : 'none';
+            });
+        }
 
         content.appendChild(grid);
         item.appendChild(header);
