@@ -52,12 +52,31 @@ const Components = {
     </footer>
     `,
 
+    initPageHero: function() {
+        const heroContainer = document.getElementById('hero-component');
+        if (heroContainer) {
+            const title = heroContainer.dataset.title || '';
+            const subtitle = heroContainer.dataset.subtitle || '';
+            const extraClass = heroContainer.dataset.class || '';
+            heroContainer.className = `hero page-hero ${extraClass}`;
+            heroContainer.innerHTML = `
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <h1 class="hero-title">${title}</h1>
+                    <p class="hero-subtitle">${subtitle}</p>
+                </div>`;
+        }
+    },
+
     init: function() {
         // Inject Navbar
         const navContainer = document.getElementById('navbar-component');
         if (navContainer) {
             navContainer.innerHTML = this.navbarHTML;
         }
+
+        // Inject Page Hero
+        this.initPageHero();
 
         // Inject Footer
         const footerContainer = document.getElementById('footer-component');

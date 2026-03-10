@@ -1,24 +1,7 @@
 /* Page-Specific Styles for Facilities */
 
-.facilities-hero {
-    margin-top: 44px; /* Navbar height */
-    padding: 100px 20px 60px;
-    text-align: center;
-    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-    color: #1d1d1f;
-}
-
-.facilities-hero h1 {
-    font-size: 48px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    letter-spacing: -0.02em;
-}
-
-.hero-subtitle {
-    font-size: 20px;
-    font-weight: 400;
-    opacity: 0.8;
+.facilities-hero-bg {
+    background-image: url('https://img.lunadeer.cn/i/2025/11/26/69267755e14e3.png');
 }
 
 /* Container */

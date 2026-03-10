@@ -1,9 +1,4 @@
 /* Specific styles for stats page override/additions */
-.stats-hero {
-    height: 40vh;
-    min-height: 300px;
-}
-
 .stats-hero-bg {
     background-image: url('https://img.lunadeer.cn/i/2025/11/26/69267755e14e3.png');
 }

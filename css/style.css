@@ -125,6 +125,11 @@ body {
     color: white;
 }
 
+.page-hero {
+    height: 40vh;
+    min-height: 300px;
+}
+
 .home-hero {
     background-image: url('https://img.lunadeer.cn/i/2025/11/26/69267755e14e3.png');
 }
