@@ -13,7 +13,7 @@ STATS_DIR = "stats"
 MAX_WORKERS = max(4, min(16, int(os.environ.get("STATS_MAX_WORKERS", (os.cpu_count() or 4) * 2))))
 
 # HTTP Basic Auth for BASE_URL (from environment variables)
-BASE_URL = os.environ.get("STATS_BASE_URL", "")
+BASE_URL = os.environ.get("STATS_BASE_URL", "HTTPS://api.infstar.cn/mcstats")  # Ensure it ends with a slash
 STATS_USER = os.environ.get("STATS_USER", "")
 STATS_PASS = os.environ.get("STATS_PASS", "")
 BASE_AUTH = (STATS_USER, STATS_PASS) if STATS_USER else None
