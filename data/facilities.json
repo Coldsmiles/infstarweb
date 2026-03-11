@@ -211,5 +211,98 @@
                 "content": "刷怪塔建于早些年间，待新版本特性和功能优化改造，敬请等待。"
             }
         ]
+    },
+    {
+        "title": "竹子机",
+        "intro": "",
+        "type": "resource",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 499823,
+            "y": 64,
+            "z": 501945
+        },
+        "contributors": [
+            "Alert_1997",
+            "linwayd0529"
+        ],
+        "instructions": [],
+        "notes": []
+    },
+    {
+        "title": "小麦机",
+        "intro": "",
+        "type": "resource",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 499780,
+            "y": 64,
+            "z": 501942
+        },
+        "contributors": [
+            "Alert_1997"
+        ],
+        "instructions": [
+            {
+                "type": "text",
+                "content": "进门拿一组种子 再用其他物品把背包填满"
+            }
+        ],
+        "notes": []
+    },
+    {
+        "title": "红石合成站",
+        "intro": "",
+        "type": "infrastructure",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 499725,
+            "y": 64,
+            "z": 501929
+        },
+        "contributors": [
+            "Alert_1997"
+        ],
+        "instructions": [],
+        "notes": []
+    },
+    {
+        "title": "刷石机 一百倍速熔炉组",
+        "intro": "熔炉组里面不要放奇怪的东西",
+        "type": "infrastructure",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 499890,
+            "y": 64,
+            "z": 502117
+        },
+        "contributors": [
+            "Alert_1997",
+            "linwayd0529"
+        ],
+        "instructions": [],
+        "notes": []
+    },
+    {
+        "title": "沼泽刷怪塔",
+        "intro": "",
+        "type": "resource",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 501948,
+            "y": 64,
+            "z": 507475
+        },
+        "contributors": [
+            "Alert_1997",
+            "linwayd0529"
+        ],
+        "instructions": [],
+        "notes": []
     }
 ]
