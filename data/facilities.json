@@ -304,5 +304,45 @@
         ],
         "instructions": [],
         "notes": []
+    },
+    {
+        "title": "160K凋零玫瑰/末影珍珠塔",
+        "intro": "",
+        "type": "resource",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 652,
+            "y": 22,
+            "z": -242
+        },
+        "contributors": [
+            "EV295",
+            "ep_edge"
+        ],
+        "instructions": [],
+        "notes": []
+    },
+    {
+        "title": "溺尸三叉戟农场",
+        "intro": "手砍挂机，实现三叉戟自由。产出少量鹦鹉螺壳和铜锭",
+        "type": "resource",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 502384,
+            "y": 191,
+            "z": 504245
+        },
+        "contributors": [
+            "YiiFeng"
+        ],
+        "instructions": [
+            {
+                "type": "text",
+                "content": "推荐自带亡灵杀手Ⅴ、横扫之刃Ⅲ的武器，一刀毙命"
+            }
+        ],
+        "notes": []
     }
 ]
