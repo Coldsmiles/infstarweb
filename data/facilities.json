@@ -211,5 +211,138 @@
                 "content": "刷怪塔建于早些年间，待新版本特性和功能优化改造，敬请等待。"
             }
         ]
+    },
+    {
+        "title": "竹子机",
+        "intro": "",
+        "type": "resource",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 499823,
+            "y": 64,
+            "z": 501945
+        },
+        "contributors": [
+            "Alert_1997",
+            "linwayd0529"
+        ],
+        "instructions": [],
+        "notes": []
+    },
+    {
+        "title": "小麦机",
+        "intro": "",
+        "type": "resource",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 499780,
+            "y": 64,
+            "z": 501942
+        },
+        "contributors": [
+            "Alert_1997"
+        ],
+        "instructions": [
+            {
+                "type": "text",
+                "content": "进门拿一组种子 再用其他物品把背包填满"
+            }
+        ],
+        "notes": []
+    },
+    {
+        "title": "红石合成站",
+        "intro": "",
+        "type": "infrastructure",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 499725,
+            "y": 64,
+            "z": 501929
+        },
+        "contributors": [
+            "Alert_1997"
+        ],
+        "instructions": [],
+        "notes": []
+    },
+    {
+        "title": "刷石机 一百倍速熔炉组",
+        "intro": "熔炉组里面不要放奇怪的东西",
+        "type": "infrastructure",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 499890,
+            "y": 64,
+            "z": 502117
+        },
+        "contributors": [
+            "Alert_1997",
+            "linwayd0529"
+        ],
+        "instructions": [],
+        "notes": []
+    },
+    {
+        "title": "沼泽刷怪塔",
+        "intro": "",
+        "type": "resource",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 501948,
+            "y": 64,
+            "z": 507475
+        },
+        "contributors": [
+            "Alert_1997",
+            "linwayd0529"
+        ],
+        "instructions": [],
+        "notes": []
+    },
+    {
+        "title": "160K凋零玫瑰/末影珍珠塔",
+        "intro": "",
+        "type": "resource",
+        "dimension": "end",
+        "status": "online",
+        "coordinates": {
+            "x": 652,
+            "y": 22,
+            "z": -242
+        },
+        "contributors": [
+            "EV295",
+            "ep_edge"
+        ],
+        "instructions": [],
+        "notes": []
+    },
+    {
+        "title": "溺尸三叉戟农场",
+        "intro": "手砍挂机，实现三叉戟自由。产出少量鹦鹉螺壳和铜锭",
+        "type": "resource",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 502384,
+            "y": 191,
+            "z": 504245
+        },
+        "contributors": [
+            "YiiFeng"
+        ],
+        "instructions": [
+            {
+                "type": "text",
+                "content": "推荐自带亡灵杀手Ⅴ、横扫之刃Ⅲ的武器，一刀毙命"
+            }
+        ],
+        "notes": []
     }
 ]
