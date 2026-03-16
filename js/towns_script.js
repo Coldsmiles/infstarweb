@@ -180,8 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
         var gradient = getTownGradient(item);
         banner.className = 'town-modal-banner' + (hasLogo ? '' : ' no-logo');
         if (hasLogo) {
-            banner.style.backgroundImage = "url('" + item.logo + "')";
             banner.style.background = '';
+            banner.style.backgroundImage = "url('" + item.logo + "')";
             banner.innerHTML = '';
         } else {
             banner.style.backgroundImage = '';
