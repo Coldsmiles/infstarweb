@@ -485,6 +485,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function commitContributorInput() {
+        const contributorInput = document.getElementById('editor-contributor-input');
+        const value = contributorInput.value.trim();
+
+        if (value && !editorContributors.includes(value)) {
+            editorContributors.push(value);
+            renderContributorTags();
+            updatePreview();
+        }
+
+        contributorInput.value = '';
+    }
+
     document.getElementById('editor-contributors-tags').addEventListener('click', (e) => {
         const removeBtn = e.target.closest('.editor-tag-remove');
         if (removeBtn) {
@@ -496,16 +509,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('editor-contributor-input').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const val = e.target.value.trim();
-            if (val && !editorContributors.includes(val)) {
-                editorContributors.push(val);
-                renderContributorTags();
-                updatePreview();
-            }
-            e.target.value = '';
+        if (e.isComposing) {
+            return;
         }
+
+        if (e.key === 'Enter' || e.key === ' ' || e.code === 'Space') {
+            e.preventDefault();
+            commitContributorInput();
+        }
+    });
+
+    document.getElementById('editor-contributor-input').addEventListener('blur', () => {
+        commitContributorInput();
     });
 
     // Click on wrapper focuses input
