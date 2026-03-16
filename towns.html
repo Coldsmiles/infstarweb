@@ -140,10 +140,10 @@
             </div>
 
             <div class="town-modal-body">
-                <div class="modal-section">
-                    <h4 class="modal-section-title"><i class="fas fa-map-marker-alt"></i> 位置信息</h4>
+                <div class="modal-section" id="town-modal-location-section">
+                    <h4 class="modal-section-title" id="town-modal-location-title"><i class="fas fa-map-marker-alt"></i> 位置信息</h4>
                     <p>
-                        主世界:
+                        <span id="town-modal-dimension"></span>
                         <span id="town-modal-coords"></span>
                         <a href="#" target="_blank" id="town-modal-map-link" class="town-map-link">
                             <i class="fas fa-map-marked-alt"></i> 查看地图
@@ -261,7 +261,32 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-row coords-row">
+                        <div class="form-group">
+                            <label class="toggle-label">
+                                <span>坐标保密</span>
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="editor-town-secret">
+                                    <span class="toggle-slider"></span>
+                                </div>
+                            </label>
+                            <p class="field-hint">开启后将隐藏坐标信息，适用于不希望公开位置的城镇。</p>
+                        </div>
+                        <div class="form-group" id="editor-dimension-group">
+                            <label>所在世界</label>
+                            <div class="custom-select">
+                                <input type="hidden" id="editor-town-dimension" value="overworld">
+                                <div class="custom-select-trigger">
+                                    <span class="custom-select-text">主世界</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="custom-select-options">
+                                    <div class="custom-option selected" data-value="overworld">主世界</div>
+                                    <div class="custom-option" data-value="nether">下界</div>
+                                    <div class="custom-option" data-value="the_end">末地</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row coords-row" id="editor-coords-row">
                             <div class="form-group">
                                 <label for="editor-town-x">X 坐标</label>
                                 <input type="number" id="editor-town-x" placeholder="0">

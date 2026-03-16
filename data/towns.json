@@ -6,11 +6,8 @@
             "from": "#95ea66",
             "to": "#4aa18b"
         },
-        "coordinates": {
-            "x": 0,
-            "y": 64,
-            "z": 0
-        },
+        "dimension": "overworld",
+        "coordinatesSecret": true,
         "scale": "small",
         "townType": "building",
         "recruitment": "closed",

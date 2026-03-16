@@ -211,13 +211,26 @@ document.addEventListener('DOMContentLoaded', () => {
         recruitBadge.innerHTML = '<i class="fas ' + getRecruitIcon(item.recruitment) + '"></i> ' + getRecruitText(item.recruitment);
         badgesContainer.appendChild(recruitBadge);
 
-        // Coordinates
-        var coords = item.coordinates;
-        document.getElementById('town-modal-coords').innerText = 'X: ' + coords.x + ', Y: ' + coords.y + ', Z: ' + coords.z;
-
-        // Map Link
+        // Coordinates & Dimension
+        var coords = item.coordinates || { x: 0, y: 64, z: 0 };
+        var dimension = item.dimension || 'overworld';
+        var isSecret = item.coordinatesSecret === true;
+        var locationTitleEl = document.getElementById('town-modal-location-title');
+        var dimensionEl = document.getElementById('town-modal-dimension');
+        var coordsEl = document.getElementById('town-modal-coords');
         var mapLink = document.getElementById('town-modal-map-link');
-        mapLink.href = 'https://mcmap.lunadeer.cn/#world:' + coords.x + ':' + coords.y + ':' + coords.z + ':500:0:0:0:1:flat';
+
+        locationTitleEl.innerHTML = '<i class="fas fa-map-marker-alt"></i> 位置信息';
+        if (isSecret) {
+            dimensionEl.innerText = '';
+            coordsEl.innerText = '保密';
+            mapLink.style.display = 'none';
+        } else {
+            dimensionEl.innerText = getDimensionText(dimension) + ': ';
+            coordsEl.innerText = 'X: ' + coords.x + ', Y: ' + coords.y + ', Z: ' + coords.z;
+            mapLink.style.display = '';
+            mapLink.href = 'https://mcmap.lunadeer.cn/#' + getDimensionMapWorld(dimension) + ':' + coords.x + ':' + coords.y + ':' + coords.z + ':500:0:0:0:1:flat';
+        }
 
         // Founders
         var foundersContainer = document.getElementById('town-modal-founders');
@@ -340,6 +353,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function getRecruitIcon(recruitment) {
         var map = { 'welcome': 'fa-door-open', 'closed': 'fa-door-closed', 'maybe': 'fa-question-circle' };
         return map[recruitment] || 'fa-info-circle';
+    }
+
+    function getDimensionText(dimension) {
+        var map = { 'overworld': '主世界', 'nether': '下界', 'the_end': '末地' };
+        return map[dimension] || '主世界';
+    }
+
+    function getDimensionMapWorld(dimension) {
+        var map = { 'overworld': 'world', 'nether': 'world_nether', 'the_end': 'world_the_end' };
+        return map[dimension] || 'world';
     }
 
     function normalizeHexColor(value, fallback) {
@@ -496,6 +519,11 @@ document.addEventListener('DOMContentLoaded', () => {
         setCustomSelectValue('editor-town-scale', item ? item.scale : 'small');
         setCustomSelectValue('editor-town-type', item ? item.townType : 'building');
         setCustomSelectValue('editor-town-recruit', item ? item.recruitment : 'welcome');
+        setCustomSelectValue('editor-town-dimension', item && item.dimension ? item.dimension : 'overworld');
+
+        var secretCheckbox = document.getElementById('editor-town-secret');
+        secretCheckbox.checked = item ? (item.coordinatesSecret === true) : false;
+        toggleCoordsRow();
 
         document.getElementById('editor-town-x').value = item ? item.coordinates.x : '';
         document.getElementById('editor-town-y').value = item ? item.coordinates.y : '';
@@ -701,7 +729,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Live Preview ---
     ['editor-town-title', 'editor-town-logo', 'editor-town-scale', 'editor-town-type',
-     'editor-town-recruit', 'editor-town-x', 'editor-town-y', 'editor-town-z'].forEach(function(id) {
+     'editor-town-recruit', 'editor-town-dimension', 'editor-town-x', 'editor-town-y', 'editor-town-z'].forEach(function(id) {
         var el = document.getElementById(id);
         el.addEventListener('input', updatePreview);
         el.addEventListener('change', updatePreview);
@@ -711,6 +739,20 @@ document.addEventListener('DOMContentLoaded', () => {
         var el = document.getElementById(id);
         el.addEventListener('input', updatePreview);
         el.addEventListener('change', updatePreview);
+    });
+
+    // Secret coordinates toggle
+    function toggleCoordsRow() {
+        var secret = document.getElementById('editor-town-secret').checked;
+        var dimensionGroup = document.getElementById('editor-dimension-group');
+        var coordsRow = document.getElementById('editor-coords-row');
+        dimensionGroup.style.display = secret ? 'none' : '';
+        coordsRow.style.display = secret ? 'none' : '';
+    }
+
+    document.getElementById('editor-town-secret').addEventListener('change', function() {
+        toggleCoordsRow();
+        updatePreview();
     });
 
     function updatePreview() {
@@ -723,6 +765,8 @@ document.addEventListener('DOMContentLoaded', () => {
         var x = document.getElementById('editor-town-x').value || '0';
         var y = document.getElementById('editor-town-y').value || '64';
         var z = document.getElementById('editor-town-z').value || '0';
+        var dimension = document.getElementById('editor-town-dimension').value || 'overworld';
+        var isSecret = document.getElementById('editor-town-secret').checked;
         var gradient = {
             from: normalizeHexColor(document.getElementById('editor-town-gradient-from').value, DEFAULT_GRADIENT.from),
             to: normalizeHexColor(document.getElementById('editor-town-gradient-to').value, DEFAULT_GRADIENT.to)
@@ -748,8 +792,12 @@ document.addEventListener('DOMContentLoaded', () => {
         html += '<div class="preview-detail-body">';
 
         html += '<div class="preview-section">';
-        html += '<h4 class="preview-section-title"><i class="fas fa-map-marker-alt"></i> 位置信息</h4>';
-        html += '<p class="preview-inline-text">主世界: X: ' + escapeHtml(x) + ', Y: ' + escapeHtml(y) + ', Z: ' + escapeHtml(z) + '</p>';
+        html += '<h4 class="preview-section-title"><i class="fas fa-map-marker-alt"></i> ' + (isSecret ? '位置信息（保密）' : '位置信息') + '</h4>';
+        if (isSecret) {
+            html += '<p class="preview-inline-text">坐标保密</p>';
+        } else {
+            html += '<p class="preview-inline-text">' + escapeHtml(getDimensionText(dimension)) + ': X: ' + escapeHtml(x) + ', Y: ' + escapeHtml(y) + ', Z: ' + escapeHtml(z) + '</p>';
+        }
         html += '</div>';
 
         html += '<div class="preview-section">';
@@ -810,6 +858,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        var isSecret = document.getElementById('editor-town-secret').checked;
         var townObj = {
             title: title,
             logo: document.getElementById('editor-town-logo').value.trim(),
@@ -817,11 +866,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 from: normalizeHexColor(document.getElementById('editor-town-gradient-from').value, DEFAULT_GRADIENT.from),
                 to: normalizeHexColor(document.getElementById('editor-town-gradient-to').value, DEFAULT_GRADIENT.to)
             },
-            coordinates: {
-                x: parseInt(document.getElementById('editor-town-x').value) || 0,
-                y: parseInt(document.getElementById('editor-town-y').value) || 64,
-                z: parseInt(document.getElementById('editor-town-z').value) || 0
-            },
+            dimension: document.getElementById('editor-town-dimension').value || 'overworld',
+            coordinatesSecret: isSecret,
             scale: document.getElementById('editor-town-scale').value,
             townType: document.getElementById('editor-town-type').value,
             recruitment: document.getElementById('editor-town-recruit').value,
@@ -831,6 +877,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return i.type === 'video' ? { type: 'video', content: parseBVNumber(i.content) || i.content } : { type: i.type, content: i.content };
             })
         };
+
+        if (!isSecret) {
+            townObj.coordinates = {
+                x: parseInt(document.getElementById('editor-town-x').value) || 0,
+                y: parseInt(document.getElementById('editor-town-y').value) || 64,
+                z: parseInt(document.getElementById('editor-town-z').value) || 0
+            };
+        }
 
         var jsonStr = JSON.stringify(townObj, null, 4);
         document.getElementById('town-json-output').value = jsonStr;
