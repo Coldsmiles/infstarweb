@@ -1,4 +1,6 @@
 <script setup>
+import { RouterLink } from 'vue-router';
+
 defineProps({
   open: {
     type: Boolean,
@@ -32,18 +34,28 @@ const emit = defineEmits(['close']);
           </button>
         </div>
         <nav class="mobile-drawer__links" aria-label="移动端导航">
-          <a
-            v-for="item in items"
-            :key="item.href"
-            class="mobile-drawer__link"
-            :href="item.href"
-            @click="emit('close')"
-          >
-            <span>{{ item.label }}</span>
-            <small v-if="item.description">{{ item.description }}</small>
-          </a>
+          <template v-for="item in items" :key="item.href">
+            <a
+              v-if="item.external"
+              class="mobile-drawer__link"
+              :href="item.href"
+              target="_blank"
+              rel="noopener noreferrer"
+              @click="emit('close')"
+            >
+              <span>{{ item.label }}</span>
+            </a>
+            <RouterLink
+              v-else
+              class="mobile-drawer__link"
+              :to="item.href"
+              @click="emit('close')"
+            >
+              <span>{{ item.label }}</span>
+            </RouterLink>
+          </template>
         </nav>
-        <a class="mobile-drawer__cta" :href="ctaHref" @click="emit('close')">{{ ctaLabel }}</a>
+        <RouterLink class="mobile-drawer__cta" :to="ctaHref" @click="emit('close')">{{ ctaLabel }}</RouterLink>
       </aside>
     </div>
   </transition>

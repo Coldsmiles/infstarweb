@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { RouterLink } from 'vue-router';
 import MobileNavDrawer from './MobileNavDrawer.vue';
 
 const props = defineProps({
@@ -48,22 +49,28 @@ const isActive = (href) => href === props.activePath;
         <span></span>
       </button>
 
-      <a class="site-navbar__logo" href="/">
+      <RouterLink class="site-navbar__logo" to="/">
         <img :src="logoSrc" :alt="logoAlt">
-      </a>
+      </RouterLink>
 
       <nav class="site-navbar__links" aria-label="主导航">
-        <a
-          v-for="item in items"
-          :key="item.href"
-          :href="item.href"
-          :class="['site-navbar__link', { 'is-active': isActive(item.href) }]"
-        >
-          {{ item.label }}
-        </a>
+        <template v-for="item in items" :key="item.href">
+          <a
+            v-if="item.external"
+            :href="item.href"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="site-navbar__link"
+          >{{ item.label }}</a>
+          <RouterLink
+            v-else
+            :to="item.href"
+            :class="['site-navbar__link', { 'is-active': isActive(item.href) }]"
+          >{{ item.label }}</RouterLink>
+        </template>
       </nav>
 
-      <a class="site-navbar__cta" :href="ctaHref">{{ ctaLabel }}</a>
+      <RouterLink class="site-navbar__cta" :to="ctaHref">{{ ctaLabel }}</RouterLink>
     </div>
   </header>
 

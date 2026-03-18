@@ -1,4 +1,6 @@
 <script setup>
+import { RouterLink } from 'vue-router';
+
 const props = defineProps({
   brand: {
     type: String,
@@ -11,9 +13,9 @@ const props = defineProps({
 });
 
 const footerLinks = [
-  { label: '文档', href: '/doc.html' },
-  { label: '地图', href: '/map.html' },
-  { label: '赞助', href: '/sponsor.html' },
+  { label: '文档', href: '/doc' },
+  { label: '地图', href: '/map' },
+  { label: '赞助', href: '/sponsor' },
 ];
 </script>
 
@@ -25,7 +27,7 @@ const footerLinks = [
         <p class="site-footer__copy">© {{ year }} {{ brand }} Minecraft 服务器</p>
       </div>
       <nav class="site-footer__links" aria-label="页脚导航">
-        <a v-for="link in footerLinks" :key="link.href" :href="link.href">{{ link.label }}</a>
+        <RouterLink v-for="link in footerLinks" :key="link.href" :to="link.href">{{ link.label }}</RouterLink>
       </nav>
     </div>
   </footer>
