@@ -123,8 +123,8 @@ async function fetchCrowdfunding() {
         const name = parts[0].trim();
         const current = parseFloat(parts[1].trim());
         const target = parseFloat(parts[2].trim());
-        if (name && !isNaN(current) && !isNaN(target) && current > 0) {
-          items.push({ name, current, target, pct: Math.min(100, (current / target) * 100) });
+        if (name && !isNaN(current) && !isNaN(target)) {
+          items.push({ name, current, target, pct: target > 0 ? Math.min(100, (current / target) * 100) : 0 });
         }
       }
     });

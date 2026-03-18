@@ -2,8 +2,10 @@
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import FilterPanel from '../components/shared/FilterPanel.vue';
-import BaseBadge from '../components/base/BaseBadge.vue';
 import EmptyState from '../components/base/EmptyState.vue';
+import EditorModal from '../components/shared/EditorModal.vue';
+import JsonOutputModal from '../components/shared/JsonOutputModal.vue';
+import { useSortableList } from '../composables/useEditorHelpers.js';
 
 const route = useRoute();
 
@@ -13,6 +15,18 @@ const categoryFilter = ref('all');
 const expandedId = ref(null);
 const editMode = ref(false);
 const sharedId = ref(null);
+const editorOpen = ref(false);
+const jsonOutputOpen = ref(false);
+const jsonOutputText = ref('');
+
+// Editor form state
+const edTitle = ref('');
+const edIntro = ref('');
+const edTime = ref('');
+const edCategory = ref('activity');
+const openSelects = ref({});
+const content = useSortableList();
+const dragState = ref({ listName: null, fromIdx: null });
 
 // Secret "edit" keyboard shortcut
 let secretBuffer = '';
@@ -71,13 +85,14 @@ function generateAnchorId(item) {
 
 const categoryOptions = [
   { value: 'all', label: '全部' },
-  { value: 'activity', label: '活动' },
-  { value: 'maintenance', label: '维护' },
-  { value: 'other', label: '其他' },
+  { value: 'activity', label: '活动', iconClass: 'fas fa-calendar-check' },
+  { value: 'maintenance', label: '维护', iconClass: 'fas fa-wrench' },
+  { value: 'other', label: '其他', iconClass: 'fas fa-info-circle' },
 ];
 
 const categoryLabelMap = { activity: '活动', maintenance: '维护', other: '其他' };
 const categoryToneMap = { activity: 'success', maintenance: 'warning', other: 'purple' };
+const categoryIconMap = { activity: 'fas fa-calendar-check', maintenance: 'fas fa-wrench', other: 'fas fa-info-circle' };
 
 const filtered = computed(() => {
   return announcements.value.filter(item => {
@@ -111,6 +126,91 @@ function parseBV(input) {
 function onFilterChange({ key, value }) {
   if (key === 'category') categoryFilter.value = value;
 }
+
+// ========== Editor ==========
+
+const categorySelectOptions = [
+  { value: 'activity', label: '活动' },
+  { value: 'maintenance', label: '维护' },
+  { value: 'other', label: '其他' },
+];
+
+function getSelectLabel(options, value) {
+  return options.find(o => o.value === value)?.label || value;
+}
+
+function toggleSelect(name) {
+  openSelects.value[name] = !openSelects.value[name];
+}
+
+function selectOption(name, value) {
+  if (name === 'category') edCategory.value = value;
+  openSelects.value[name] = false;
+}
+
+function closeAllSelects() {
+  openSelects.value = {};
+}
+
+function openEditor(item) {
+  edTitle.value = item ? item.title : '';
+  edIntro.value = item ? item.intro : '';
+  edTime.value = item ? item.time : new Date().toISOString().slice(0, 10);
+  edCategory.value = item?.category || 'activity';
+  content.reset(item?.content || []);
+  openSelects.value = {};
+  editorOpen.value = true;
+}
+
+function onDragStart(listName, idx, e) {
+  dragState.value = { listName, fromIdx: idx };
+  e.target.closest('.sortable-item').classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', '');
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function onDragEnter(listName, idx, e) {
+  if (dragState.value.listName === listName) {
+    e.target.closest('.sortable-item')?.classList.add('drag-over');
+  }
+}
+
+function onDragLeave(e) {
+  e.target.closest('.sortable-item')?.classList.remove('drag-over');
+}
+
+function onDrop(listName, toIdx, e) {
+  e.preventDefault();
+  e.target.closest('.sortable-item')?.classList.remove('drag-over');
+  if (dragState.value.listName !== listName) return;
+  content.moveItem(dragState.value.fromIdx, toIdx);
+}
+
+function onDragEnd(e) {
+  document.querySelectorAll('.sortable-item').forEach(el => el.classList.remove('dragging', 'drag-over'));
+  dragState.value = { listName: null, fromIdx: null };
+}
+
+function generateJson() {
+  if (!edTitle.value.trim()) {
+    alert('请填写公告标题');
+    return;
+  }
+  const obj = {
+    title: edTitle.value.trim(),
+    intro: edIntro.value.trim(),
+    time: edTime.value,
+    category: edCategory.value,
+    content: content.getCleanItems().map(i => i.type === 'video' ? { type: 'video', content: parseBV(i.content) || i.content } : i),
+  };
+  jsonOutputText.value = JSON.stringify(obj, null, 4);
+  jsonOutputOpen.value = true;
+}
 </script>
 
 <template>
@@ -130,10 +230,12 @@ function onFilterChange({ key, value }) {
       :search-value="searchQuery"
       search-placeholder="搜索标题或简介..."
       :filters="[
-        { key: 'category', label: '分类', options: categoryOptions, modelValue: categoryFilter },
+        { key: 'category', label: '分类', labelIcon: 'fas fa-tag', options: categoryOptions, modelValue: categoryFilter },
       ]"
+      :action-label="editMode ? '新增公告' : ''"
       @update:search-value="searchQuery = $event"
       @change-filter="onFilterChange"
+      @action="openEditor(null)"
     />
 
     <!-- Timeline -->
@@ -149,14 +251,15 @@ function onFilterChange({ key, value }) {
           <button type="button" class="card-summary" @click="toggleItem(generateAnchorId(item))">
             <div class="card-summary-main">
               <div class="card-summary-top">
-                <BaseBadge :tone="categoryToneMap[item.category] || 'neutral'">
+                <span :class="['category-badge', 'badge-' + item.category]">
+                  <i :class="categoryIconMap[item.category]"></i>
                   {{ categoryLabelMap[item.category] || item.category }}
-                </BaseBadge>
+                </span>
                 <h3 class="announcement-title">{{ item.title }}</h3>
               </div>
               <p class="announcement-intro">{{ item.intro }}</p>
             </div>
-            <span class="card-summary-time">{{ item.time }}</span>
+            <span class="card-summary-time"><i class="far fa-clock"></i> {{ item.time }}</span>
             <span class="expand-icon">▾</span>
           </button>
 
@@ -182,7 +285,10 @@ function onFilterChange({ key, value }) {
                 :class="['btn-share', { shared: sharedId === generateAnchorId(item) }]"
                 @click="shareItem(item, $event)"
               >
-                {{ sharedId === generateAnchorId(item) ? '✓ 已复制链接' : '🔗 分享' }}
+                <template v-if="sharedId === generateAnchorId(item)">✓ 已复制链接</template><template v-else><i class="fas fa-share-alt"></i> 分享</template>
+              </button>
+              <button v-if="editMode" type="button" class="btn-edit" @click.stop="openEditor(item)">
+                <i class="fas fa-pen"></i> 编辑
               </button>
             </div>
           </div>
@@ -192,10 +298,99 @@ function onFilterChange({ key, value }) {
 
     <!-- Empty -->
     <EmptyState v-else title="暂无公告" description="当前没有匹配的公告内容。" />
+
+    <!-- Editor Modal -->
+    <EditorModal v-model="editorOpen" title="公告编辑器" icon="fas fa-bullhorn">
+      <template #preview>
+        <div class="preview-card">
+          <div class="preview-header">
+            <div class="preview-title">{{ edTitle || '未命名公告' }}</div>
+            <div class="preview-meta-row">
+              <span :class="['category-badge', 'badge-' + edCategory]">
+                <i :class="categoryIconMap[edCategory]"></i>
+                {{ categoryLabelMap[edCategory] }}
+              </span>
+              <span class="preview-time"><i class="far fa-clock"></i> {{ edTime || '未设置时间' }}</span>
+            </div>
+          </div>
+          <div class="preview-body">
+            <p class="preview-intro">{{ edIntro || '暂无简介' }}</p>
+            <div class="content-blocks" v-if="content.items.value.length">
+              <template v-for="(block, bi) in content.items.value" :key="bi">
+                <p v-if="block.type === 'text'">{{ block.content || '空文字' }}</p>
+                <img v-else-if="block.type === 'image' && block.content" :src="block.content" loading="lazy" alt="">
+                <p v-else-if="block.type === 'image'" class="preview-text-secondary">空图片</p>
+                <div v-else-if="block.type === 'video' && parseBV(block.content)" class="video-embed-wrapper">
+                  <iframe :src="`https://player.bilibili.com/player.html?bvid=${parseBV(block.content)}&autoplay=0&high_quality=1`" allowfullscreen sandbox="allow-scripts allow-same-origin allow-popups" loading="lazy"></iframe>
+                </div>
+                <p v-else-if="block.type === 'video'" class="preview-text-secondary">请输入有效的 BV 号或 bilibili 视频地址</p>
+              </template>
+            </div>
+            <p v-else>无</p>
+          </div>
+        </div>
+      </template>
+
+      <template #form>
+        <div @click="closeAllSelects">
+          <div class="form-group">
+            <label>公告标题</label>
+            <input type="text" v-model="edTitle" placeholder="输入公告标题...">
+          </div>
+          <div class="form-group">
+            <label>简介</label>
+            <textarea v-model="edIntro" placeholder="输入简介..." rows="2"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>时间</label>
+              <input type="date" v-model="edTime">
+            </div>
+            <div class="form-group">
+              <label>类别</label>
+              <div :class="['custom-select', { open: openSelects.category }]" @click.stop>
+                <div class="custom-select-trigger" @click="toggleSelect('category')">
+                  <span>{{ getSelectLabel(categorySelectOptions, edCategory) }}</span>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="custom-select-options">
+                  <div v-for="opt in categorySelectOptions" :key="opt.value" :class="['custom-option', { selected: edCategory === opt.value }]" @click="selectOption('category', opt.value)">{{ opt.label }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>正文内容</label>
+            <div class="sortable-list">
+              <div v-for="(item, idx) in content.items.value" :key="idx" class="sortable-item" draggable="true" @dragstart="onDragStart('content', idx, $event)" @dragover="onDragOver" @dragenter="onDragEnter('content', idx, $event)" @dragleave="onDragLeave" @drop="onDrop('content', idx, $event)" @dragend="onDragEnd">
+                <span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>
+                <span :class="['item-type-badge', 'badge-' + item.type]">{{ item.type === 'text' ? '文字' : item.type === 'image' ? '图片' : '视频' }}</span>
+                <textarea v-if="item.type === 'text'" class="item-content" rows="2" placeholder="输入文字内容..." :value="item.content" @input="content.updateContent(idx, $event.target.value)"></textarea>
+                <input v-else-if="item.type === 'image'" type="text" class="item-content" placeholder="输入图片URL..." :value="item.content" @input="content.updateContent(idx, $event.target.value)">
+                <input v-else type="text" class="item-content" placeholder="BV1xxxxxxxxxx 或 bilibili 视频地址" :value="item.content" @input="content.updateContent(idx, $event.target.value)">
+                <button type="button" class="remove-item-btn" @click="content.removeItem(idx)"><i class="fas fa-trash-alt"></i></button>
+              </div>
+            </div>
+            <div class="add-item-row">
+              <button type="button" class="add-item-btn" @click="content.addItem('text')"><i class="fas fa-plus"></i> 添加文字</button>
+              <button type="button" class="add-item-btn" @click="content.addItem('image')"><i class="fas fa-image"></i> 添加图片</button>
+              <button type="button" class="add-item-btn" @click="content.addItem('video')"><i class="fas fa-video"></i> 添加视频</button>
+            </div>
+          </div>
+          <div class="editor-actions">
+            <button type="button" class="btn-generate-json" @click="generateJson"><i class="fas fa-save"></i> 生成 JSON</button>
+          </div>
+        </div>
+      </template>
+    </EditorModal>
+
+    <JsonOutputModal v-model="jsonOutputOpen" :json-text="jsonOutputText" />
   </main>
 </template>
 
 <style scoped>
+@import '../styles/editor-form.css';
+
 .announcements-hero {
   height: 35vh;
   min-height: 300px;
@@ -321,6 +516,8 @@ function onFilterChange({ key, value }) {
   align-items: center;
   gap: 16px;
   background: transparent;
+  border: none;
+  font-family: inherit;
   cursor: pointer;
   text-align: left;
 }
@@ -377,6 +574,37 @@ function onFilterChange({ key, value }) {
   color: var(--bl-text-secondary);
   white-space: nowrap;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Category Badge */
+.category-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.badge-activity {
+  background: #e8fceb;
+  color: #15803d;
+}
+
+.badge-maintenance {
+  background: #fff8d6;
+  color: #b45309;
+}
+
+.badge-other {
+  background: #f3e8ff;
+  color: #7c3aed;
 }
 
 .expand-icon {
@@ -476,6 +704,32 @@ function onFilterChange({ key, value }) {
   background: rgba(0, 113, 227, 0.04);
 }
 
+.btn-share.shared {
+  color: #15803d;
+  border-color: #34c759;
+  background: #e8fceb;
+}
+
+.btn-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  background: transparent;
+  color: var(--bl-accent);
+  border: 1.5px solid var(--bl-accent);
+  border-radius: 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--bl-transition);
+}
+
+.btn-edit:hover {
+  background: var(--bl-accent);
+  color: #fff;
+}
+
 @media (max-width: 768px) {
   .hero-title {
     font-size: 36px;
@@ -503,5 +757,46 @@ function onFilterChange({ key, value }) {
   .announcement-card.expanded .card-detail {
     padding: 20px;
   }
+}
+
+/* Editor-specific */
+.preview-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.preview-time {
+  font-size: 13px;
+  color: var(--bl-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.content-blocks {
+  background: #f9f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+.content-blocks p {
+  font-size: 15px;
+  margin: 0 0 12px;
+  line-height: 1.7;
+}
+
+.content-blocks p:last-child {
+  margin-bottom: 0;
+}
+
+.content-blocks img {
+  max-width: 100%;
+  border-radius: 12px;
+  margin: 12px 0 16px;
+  border: 1px solid rgba(0,0,0,0.05);
 }
 </style>

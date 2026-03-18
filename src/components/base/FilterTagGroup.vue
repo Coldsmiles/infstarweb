@@ -4,6 +4,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  labelIcon: {
+    type: String,
+    default: '',
+  },
   modelValue: {
     type: String,
     default: 'all',
@@ -19,7 +23,10 @@ const emit = defineEmits(['update:modelValue']);
 
 <template>
   <div class="filter-group">
-    <div v-if="label" class="filter-group__label">{{ label }}</div>
+    <div v-if="label" class="filter-group__label">
+      <i v-if="labelIcon" :class="labelIcon"></i>
+      {{ label }}
+    </div>
     <div class="filter-group__tags" role="group" :aria-label="label || '筛选项'">
       <button
         v-for="option in options"
@@ -28,7 +35,8 @@ const emit = defineEmits(['update:modelValue']);
         :class="['filter-tag', { 'is-active': option.value === modelValue }]"
         @click="emit('update:modelValue', option.value)"
       >
-        <span v-if="option.icon" class="filter-tag__icon">{{ option.icon }}</span>
+        <i v-if="option.iconClass" :class="option.iconClass" class="filter-tag__icon"></i>
+        <span v-else-if="option.icon" class="filter-tag__icon">{{ option.icon }}</span>
         <span>{{ option.label }}</span>
       </button>
     </div>
@@ -48,6 +56,9 @@ const emit = defineEmits(['update:modelValue']);
   font-size: 0.88rem;
   font-weight: 700;
   color: var(--bl-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .filter-group__tags {

@@ -102,23 +102,52 @@ onBeforeUnmount(() => {
   position: relative;
   width: min(100%, var(--bl-content-width));
   max-height: min(90vh, 980px);
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   border-radius: var(--bl-radius-xl);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 250, 252, 0.98));
   box-shadow: var(--bl-shadow-modal);
+}
+
+.base-modal__dialog::-webkit-scrollbar {
+  width: 6px;
+}
+
+.base-modal__dialog::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 10px 0;
+}
+
+.base-modal__dialog::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+}
+
+.base-modal__dialog::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .base-modal__close {
   position: absolute;
   top: 18px;
   right: 18px;
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.05);
-  color: var(--bl-text);
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--bl-text-secondary);
   font-size: 1.3rem;
   cursor: pointer;
+  transition: 0.2s;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.base-modal__close:hover {
+  background: #f0f0f0;
+  color: var(--bl-text);
 }
 
 .base-modal__header {

@@ -1,7 +1,7 @@
 <script setup>
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 
-defineProps({
+const props = defineProps({
   open: {
     type: Boolean,
     default: false,
@@ -24,133 +24,83 @@ const emit = defineEmits(['close']);
 </script>
 
 <template>
-  <transition name="drawer-fade">
-    <div v-if="open" class="mobile-drawer-mask" @click="emit('close')">
-      <aside class="mobile-drawer" @click.stop>
-        <div class="mobile-drawer__header">
-          <p>站点导航</p>
-          <button type="button" class="mobile-drawer__close" aria-label="关闭菜单" @click="emit('close')">
-            ×
-          </button>
-        </div>
-        <nav class="mobile-drawer__links" aria-label="移动端导航">
-          <template v-for="item in items" :key="item.href">
-            <a
-              v-if="item.external"
-              class="mobile-drawer__link"
-              :href="item.href"
-              target="_blank"
-              rel="noopener noreferrer"
-              @click="emit('close')"
-            >
-              <span>{{ item.label }}</span>
-            </a>
-            <RouterLink
-              v-else
-              class="mobile-drawer__link"
-              :to="item.href"
-              @click="emit('close')"
-            >
-              <span>{{ item.label }}</span>
-            </RouterLink>
-          </template>
-        </nav>
-        <RouterLink class="mobile-drawer__cta" :to="ctaHref" @click="emit('close')">{{ ctaLabel }}</RouterLink>
-      </aside>
-    </div>
-  </transition>
+  <div :class="['mobile-menu', { active: open }]">
+    <nav class="mobile-menu-links" aria-label="移动端导航">
+      <template v-for="item in items" :key="item.href">
+        <a
+          v-if="item.external"
+          :href="item.href"
+          target="_blank"
+          rel="noopener noreferrer"
+          @click="emit('close')"
+        >{{ item.label }}</a>
+        <RouterLink
+          v-else
+          :to="item.href"
+          @click="emit('close')"
+        >{{ item.label }}</RouterLink>
+      </template>
+      <RouterLink :to="ctaHref" @click="emit('close')">{{ ctaLabel }}</RouterLink>
+    </nav>
+  </div>
 </template>
 
 <style scoped>
-.drawer-fade-enter-active,
-.drawer-fade-leave-active {
-  transition: opacity 0.25s ease;
-}
-
-.drawer-fade-enter-from,
-.drawer-fade-leave-to {
-  opacity: 0;
-}
-
-.mobile-drawer-mask {
+.mobile-menu {
   position: fixed;
-  inset: 0;
-  z-index: 1200;
-  display: flex;
-  justify-content: flex-end;
-  background: rgba(15, 23, 42, 0.28);
-  backdrop-filter: blur(12px);
+  top: var(--bl-header-height);
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  overflow: hidden;
+  transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 998;
 }
 
-.mobile-drawer {
-  width: min(360px, 100%);
-  height: 100%;
-  padding: 24px 20px 28px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: -20px 0 60px rgba(15, 23, 42, 0.16);
-  display: flex;
-  flex-direction: column;
+.mobile-menu.active {
+  height: calc(100vh - var(--bl-header-height));
+  opacity: 1;
+  visibility: visible;
 }
 
-.mobile-drawer__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.mobile-drawer__header p {
-  margin: 0;
-  font-size: 0.9rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--bl-text-tertiary);
-}
-
-.mobile-drawer__close {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--bl-surface-muted);
-  font-size: 1.4rem;
-  cursor: pointer;
-}
-
-.mobile-drawer__links {
-  display: grid;
-  gap: 10px;
-}
-
-.mobile-drawer__link {
+.mobile-menu-links {
+  padding: 24px 40px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 14px 16px;
-  border-radius: var(--bl-radius-md);
-  background: #fff;
-  text-decoration: none;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+  gap: 0;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-.mobile-drawer__link span {
+.mobile-menu-links a {
+  display: block;
+  font-size: 24px;
   font-weight: 600;
-}
-
-.mobile-drawer__link small {
-  color: var(--bl-text-secondary);
-}
-
-.mobile-drawer__cta {
-  margin-top: auto;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 48px;
-  border-radius: 999px;
-  background: var(--bl-accent);
-  color: #fff;
   text-decoration: none;
-  font-weight: 700;
+  color: var(--bl-text);
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.4s ease;
 }
+
+.mobile-menu.active .mobile-menu-links a {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger animation */
+.mobile-menu.active .mobile-menu-links a:nth-child(1) { transition-delay: 0.1s; }
+.mobile-menu.active .mobile-menu-links a:nth-child(2) { transition-delay: 0.15s; }
+.mobile-menu.active .mobile-menu-links a:nth-child(3) { transition-delay: 0.2s; }
+.mobile-menu.active .mobile-menu-links a:nth-child(4) { transition-delay: 0.25s; }
+.mobile-menu.active .mobile-menu-links a:nth-child(5) { transition-delay: 0.3s; }
+.mobile-menu.active .mobile-menu-links a:nth-child(6) { transition-delay: 0.35s; }
+.mobile-menu.active .mobile-menu-links a:nth-child(7) { transition-delay: 0.4s; }
 </style>

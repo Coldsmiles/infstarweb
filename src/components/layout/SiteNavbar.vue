@@ -41,12 +41,10 @@ const isActive = (href) => href === props.activePath;
       <button
         type="button"
         class="site-navbar__toggle"
-        aria-label="打开菜单"
-        @click="mobileOpen = true"
+        :aria-label="mobileOpen ? '关闭菜单' : '打开菜单'"
+        @click="mobileOpen = !mobileOpen"
       >
-        <span></span>
-        <span></span>
-        <span></span>
+        <i :class="mobileOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
       </button>
 
       <RouterLink class="site-navbar__logo" to="/">
@@ -108,18 +106,17 @@ const isActive = (href) => href === props.activePath;
   height: 40px;
   border-radius: 50%;
   background: transparent;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
   cursor: pointer;
+  font-size: 20px;
+  color: var(--bl-text);
+  padding: 0;
+  transition: background 0.2s;
 }
 
-.site-navbar__toggle span {
-  width: 16px;
-  height: 1.5px;
-  background: var(--bl-text);
-  border-radius: 999px;
+.site-navbar__toggle:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .site-navbar__logo img {
@@ -182,15 +179,31 @@ const isActive = (href) => href === props.activePath;
 @media (max-width: 860px) {
   .site-navbar__toggle {
     display: inline-flex;
+    order: 1;
   }
 
-  .site-navbar__links,
-  .site-navbar__cta {
+  .site-navbar__links {
     display: none;
+  }
+
+  .site-navbar__logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    order: 2;
+    margin: 0;
+  }
+
+  .site-navbar__cta {
+    order: 3;
+    margin: 0;
+    padding: 0 12px;
+    font-size: 11px;
   }
 
   .site-navbar__inner {
     justify-content: space-between;
+    padding: 0 15px;
   }
 }
 </style>

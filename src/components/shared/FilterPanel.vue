@@ -54,6 +54,7 @@ const emit = defineEmits(['update:searchValue', 'change-filter', 'action']);
         v-for="filter in filters"
         :key="filter.key"
         :label="filter.label"
+        :label-icon="filter.labelIcon"
         :options="filter.options"
         :model-value="filter.modelValue"
         @update:model-value="emit('change-filter', { key: filter.key, value: $event })"

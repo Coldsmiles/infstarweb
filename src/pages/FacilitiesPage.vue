@@ -6,6 +6,9 @@ import BaseBadge from '../components/base/BaseBadge.vue';
 import BaseModal from '../components/base/BaseModal.vue';
 import ModalSection from '../components/detail/ModalSection.vue';
 import EmptyState from '../components/base/EmptyState.vue';
+import EditorModal from '../components/shared/EditorModal.vue';
+import JsonOutputModal from '../components/shared/JsonOutputModal.vue';
+import { useSortableList, useTagsInput } from '../composables/useEditorHelpers.js';
 
 const route = useRoute();
 
@@ -16,19 +19,28 @@ const dimensionFilter = ref('all');
 const modalOpen = ref(false);
 const selectedFacility = ref(null);
 const sharedId = ref(null);
-const editMode = ref(false);
+const editorOpen = ref(false);
+const jsonOutputOpen = ref(false);
+const jsonOutputText = ref('');
 
-// Secret edit shortcut
-let secretBuffer = '';
-function onSecretKey(e) {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-  secretBuffer += e.key.toLowerCase();
-  if (secretBuffer.length > 4) secretBuffer = secretBuffer.slice(-4);
-  if (secretBuffer === 'edit') { editMode.value = !editMode.value; secretBuffer = ''; }
-}
+// Editor form state
+const edTitle = ref('');
+const edIntro = ref('');
+const edType = ref('resource');
+const edStatus = ref('online');
+const edDimension = ref('overworld');
+const edX = ref('');
+const edY = ref('');
+const edZ = ref('');
+const openSelects = ref({});
+const contributors = useTagsInput();
+const instructions = useSortableList();
+const notes = useSortableList();
+
+// Drag state for sortable lists
+const dragState = ref({ listName: null, fromIdx: null });
 
 onMounted(() => {
-  document.addEventListener('keydown', onSecretKey);
   fetch('/data/facilities.json')
     .then(r => r.json())
     .then(data => {
@@ -56,16 +68,16 @@ function generateId(item) {
 
 const typeOptions = [
   { value: 'all', label: '全部' },
-  { value: 'resource', label: '资源' },
-  { value: 'xp', label: '经验' },
-  { value: 'infrastructure', label: '基建' },
+  { value: 'resource', label: '资源', iconClass: 'fas fa-cube' },
+  { value: 'xp', label: '经验', iconClass: 'fas fa-star' },
+  { value: 'infrastructure', label: '基建', iconClass: 'fas fa-road' },
 ];
 
 const dimensionOptions = [
   { value: 'all', label: '全部' },
-  { value: 'overworld', label: '主世界' },
-  { value: 'nether', label: '下界' },
-  { value: 'end', label: '末地' },
+  { value: 'overworld', label: '主世界', iconClass: 'fas fa-sun' },
+  { value: 'nether', label: '下界', iconClass: 'fas fa-fire' },
+  { value: 'end', label: '末地', iconClass: 'fas fa-dragon' },
 ];
 
 const typeTextMap = { resource: '资源', xp: '经验', infrastructure: '基建' };
@@ -121,6 +133,141 @@ function onFilterChange({ key, value }) {
   if (key === 'type') typeFilter.value = value;
   if (key === 'dimension') dimensionFilter.value = value;
 }
+
+// ========== Editor ==========
+
+const typeSelectOptions = [
+  { value: 'resource', label: '资源类' },
+  { value: 'xp', label: '经验类' },
+  { value: 'infrastructure', label: '基础设施' },
+];
+const statusSelectOptions = [
+  { value: 'online', label: '正常运行' },
+  { value: 'maintenance', label: '维护中' },
+  { value: 'offline', label: '暂时失效' },
+];
+const dimensionSelectOptions = [
+  { value: 'overworld', label: '主世界' },
+  { value: 'nether', label: '下界' },
+  { value: 'end', label: '末地' },
+];
+
+function getSelectLabel(options, value) {
+  return options.find(o => o.value === value)?.label || value;
+}
+
+function toggleSelect(name) {
+  openSelects.value[name] = !openSelects.value[name];
+}
+
+function selectOption(name, value) {
+  if (name === 'type') edType.value = value;
+  else if (name === 'status') edStatus.value = value;
+  else if (name === 'dimension') edDimension.value = value;
+  openSelects.value[name] = false;
+}
+
+function closeAllSelects() {
+  openSelects.value = {};
+}
+
+function openEditor(item) {
+  edTitle.value = item ? item.title : '';
+  edIntro.value = item ? item.intro : '';
+  edType.value = item ? item.type : 'resource';
+  edStatus.value = item ? item.status : 'online';
+  edDimension.value = item ? item.dimension : 'overworld';
+  edX.value = item?.coordinates ? String(item.coordinates.x) : '';
+  edY.value = item?.coordinates ? String(item.coordinates.y) : '';
+  edZ.value = item?.coordinates ? String(item.coordinates.z) : '';
+  contributors.reset(item?.contributors || []);
+  instructions.reset(item?.instructions || []);
+  notes.reset(item?.notes || []);
+  openSelects.value = {};
+  editorOpen.value = true;
+}
+
+function openEditorFromModal(item) {
+  modalOpen.value = false;
+  selectedFacility.value = null;
+  nextTick(() => openEditor(item));
+}
+
+function onContributorKeydown(e) {
+  if (e.isComposing) return;
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    commitContributorInput(e.target);
+  }
+}
+
+function commitContributorInput(input) {
+  const val = input.value.trim();
+  if (val) {
+    contributors.addTag(val);
+    input.value = '';
+  }
+}
+
+// Drag-and-drop for sortable lists
+function onDragStart(listName, idx, e) {
+  dragState.value = { listName, fromIdx: idx };
+  e.target.closest('.sortable-item').classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', '');
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function onDragEnter(listName, idx, e) {
+  if (dragState.value.listName === listName) {
+    e.target.closest('.sortable-item')?.classList.add('drag-over');
+  }
+}
+
+function onDragLeave(e) {
+  e.target.closest('.sortable-item')?.classList.remove('drag-over');
+}
+
+function onDrop(listName, toIdx, e) {
+  e.preventDefault();
+  e.target.closest('.sortable-item')?.classList.remove('drag-over');
+  if (dragState.value.listName !== listName) return;
+  const list = listName === 'instructions' ? instructions : notes;
+  list.moveItem(dragState.value.fromIdx, toIdx);
+}
+
+function onDragEnd(e) {
+  document.querySelectorAll('.sortable-item').forEach(el => el.classList.remove('dragging', 'drag-over'));
+  dragState.value = { listName: null, fromIdx: null };
+}
+
+function generateJson() {
+  if (!edTitle.value.trim()) {
+    alert('请填写设施名称');
+    return;
+  }
+  const obj = {
+    title: edTitle.value.trim(),
+    intro: edIntro.value.trim(),
+    type: edType.value,
+    dimension: edDimension.value,
+    status: edStatus.value,
+    coordinates: {
+      x: parseInt(edX.value) || 0,
+      y: parseInt(edY.value) || 64,
+      z: parseInt(edZ.value) || 0,
+    },
+    contributors: [...contributors.tags.value],
+    instructions: instructions.getCleanItems().map(i => i.type === 'video' ? { type: 'video', content: parseBV(i.content) || i.content } : i),
+    notes: notes.getCleanItems().map(n => n.type === 'video' ? { type: 'video', content: parseBV(n.content) || n.content } : n),
+  };
+  jsonOutputText.value = JSON.stringify(obj, null, 4);
+  jsonOutputOpen.value = true;
+}
 </script>
 
 <template>
@@ -140,11 +287,13 @@ function onFilterChange({ key, value }) {
       :search-value="searchQuery"
       search-placeholder="搜索设施名称或简介..."
       :filters="[
-        { key: 'type', label: '类型', options: typeOptions, modelValue: typeFilter },
-        { key: 'dimension', label: '维度', options: dimensionOptions, modelValue: dimensionFilter },
+        { key: 'type', label: '类型', labelIcon: 'fas fa-layer-group', options: typeOptions, modelValue: typeFilter },
+        { key: 'dimension', label: '维度', labelIcon: 'fas fa-globe', options: dimensionOptions, modelValue: dimensionFilter },
       ]"
+      action-label="新增设施"
       @update:search-value="searchQuery = $event"
       @change-filter="onFilterChange"
+      @action="openEditor(null)"
     />
 
     <!-- Grid -->
@@ -179,12 +328,12 @@ function onFilterChange({ key, value }) {
           <p class="modal-intro">{{ selectedFacility.intro }}</p>
           <div class="modal-badges-row">
             <div class="modal-badges">
-              <BaseBadge :tone="statusToneMap[selectedFacility.status]">
+              <span :class="['badge', 'large-badge', 'badge-status-' + selectedFacility.status]">
                 {{ statusTextMap[selectedFacility.status] }}
-              </BaseBadge>
-              <BaseBadge tone="accent">
+              </span>
+              <span class="badge large-badge badge-type">
                 {{ typeTextMap[selectedFacility.type] }}
-              </BaseBadge>
+              </span>
             </div>
             <div class="modal-actions">
               <button
@@ -192,7 +341,10 @@ function onFilterChange({ key, value }) {
                 :class="['btn-share', { shared: sharedId === generateId(selectedFacility) }]"
                 @click="shareItem(selectedFacility)"
               >
-                {{ sharedId === generateId(selectedFacility) ? '✓ 已复制' : '🔗 分享' }}
+                <template v-if="sharedId === generateId(selectedFacility)">✓ 已复制</template><template v-else><i class="fas fa-share-alt"></i> 分享</template>
+              </button>
+              <button type="button" class="btn-edit" @click="openEditorFromModal(selectedFacility)">
+                <i class="fas fa-pen"></i> 编辑
               </button>
             </div>
           </div>
@@ -213,7 +365,7 @@ function onFilterChange({ key, value }) {
               rel="noopener"
               class="map-link"
             >
-              🗺️ 在地图中查看
+              <i class="fas fa-map-marked-alt"></i> 在地图中查看
             </a>
           </p>
         </ModalSection>
@@ -262,10 +414,192 @@ function onFilterChange({ key, value }) {
         </ModalSection>
       </template>
     </BaseModal>
+
+    <!-- Editor Modal -->
+    <EditorModal v-model="editorOpen" title="设施编辑器" icon="fas fa-tools">
+      <template #preview>
+        <div class="preview-card">
+          <div class="preview-header">
+            <div class="preview-title">{{ edTitle || '未命名设施' }}</div>
+            <div class="modal-badges">
+              <span :class="['badge', 'large-badge', 'badge-status-' + edStatus]">{{ statusTextMap[edStatus] }}</span>
+              <span class="badge large-badge badge-type">{{ typeTextMap[edType] }}</span>
+            </div>
+          </div>
+          <div class="preview-body">
+            <p class="preview-intro">{{ edIntro || '暂无简介' }}</p>
+            <div class="preview-section">
+              <div class="preview-section-title"><i class="fas fa-map-marker-alt"></i> 位置信息</div>
+              <p>{{ dimensionTextMap[edDimension] }}: X: {{ edX || '0' }}, Y: {{ edY || '64' }}, Z: {{ edZ || '0' }}</p>
+            </div>
+            <div class="preview-section">
+              <div class="preview-section-title"><i class="fas fa-users-cog"></i> 贡献/维护人员</div>
+              <div v-if="contributors.tags.value.length" class="contributors-list">
+                <span v-for="name in contributors.tags.value" :key="name" class="contributor-tag">
+                  <img :src="`https://minotar.net/avatar/${encodeURIComponent(name)}/20`" :alt="name" loading="lazy">
+                  {{ name }}
+                </span>
+              </div>
+              <span v-else class="preview-text-secondary">暂无记录</span>
+            </div>
+            <div class="preview-section">
+              <div class="preview-section-title"><i class="fas fa-book-open"></i> 使用说明</div>
+              <div class="content-blocks" v-if="instructions.items.value.length">
+                <template v-for="(block, bi) in instructions.items.value" :key="bi">
+                  <p v-if="block.type === 'text'">{{ block.content || '空文字' }}</p>
+                  <img v-else-if="block.type === 'image' && block.content" :src="block.content" loading="lazy" alt="">
+                  <p v-else-if="block.type === 'image'" class="preview-text-secondary">空图片</p>
+                  <div v-else-if="block.type === 'video' && parseBV(block.content)" class="video-embed-wrapper">
+                    <iframe :src="`https://player.bilibili.com/player.html?bvid=${parseBV(block.content)}&autoplay=0&high_quality=1`" allowfullscreen sandbox="allow-scripts allow-same-origin allow-popups" loading="lazy"></iframe>
+                  </div>
+                  <p v-else-if="block.type === 'video'" class="preview-text-secondary">请输入有效的 BV 号或 bilibili 视频地址</p>
+                </template>
+              </div>
+              <p v-else>无</p>
+            </div>
+            <div class="preview-section">
+              <div class="preview-section-title"><i class="fas fa-exclamation-triangle"></i> 注意事项</div>
+              <div class="content-blocks" v-if="notes.items.value.length">
+                <template v-for="(block, bi) in notes.items.value" :key="bi">
+                  <p v-if="block.type === 'text'">{{ block.content || '空文字' }}</p>
+                  <img v-else-if="block.type === 'image' && block.content" :src="block.content" loading="lazy" alt="">
+                  <p v-else-if="block.type === 'image'" class="preview-text-secondary">空图片</p>
+                  <div v-else-if="block.type === 'video' && parseBV(block.content)" class="video-embed-wrapper">
+                    <iframe :src="`https://player.bilibili.com/player.html?bvid=${parseBV(block.content)}&autoplay=0&high_quality=1`" allowfullscreen sandbox="allow-scripts allow-same-origin allow-popups" loading="lazy"></iframe>
+                  </div>
+                  <p v-else-if="block.type === 'video'" class="preview-text-secondary">请输入有效的 BV 号或 bilibili 视频地址</p>
+                </template>
+              </div>
+              <p v-else>无</p>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <template #form>
+        <div @click="closeAllSelects">
+          <div class="form-group">
+            <label>设施名称</label>
+            <input type="text" v-model="edTitle" placeholder="输入设施名称...">
+          </div>
+          <div class="form-group">
+            <label>设施简介</label>
+            <textarea v-model="edIntro" placeholder="输入设施简介..." rows="3"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>类型</label>
+              <div :class="['custom-select', { open: openSelects.type }]" @click.stop>
+                <div class="custom-select-trigger" @click="toggleSelect('type')">
+                  <span>{{ getSelectLabel(typeSelectOptions, edType) }}</span>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="custom-select-options">
+                  <div v-for="opt in typeSelectOptions" :key="opt.value" :class="['custom-option', { selected: edType === opt.value }]" @click="selectOption('type', opt.value)">{{ opt.label }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>状态</label>
+              <div :class="['custom-select', { open: openSelects.status }]" @click.stop>
+                <div class="custom-select-trigger" @click="toggleSelect('status')">
+                  <span>{{ getSelectLabel(statusSelectOptions, edStatus) }}</span>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="custom-select-options">
+                  <div v-for="opt in statusSelectOptions" :key="opt.value" :class="['custom-option', { selected: edStatus === opt.value }]" @click="selectOption('status', opt.value)">{{ opt.label }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>维度</label>
+              <div :class="['custom-select', { open: openSelects.dimension }]" @click.stop>
+                <div class="custom-select-trigger" @click="toggleSelect('dimension')">
+                  <span>{{ getSelectLabel(dimensionSelectOptions, edDimension) }}</span>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="custom-select-options">
+                  <div v-for="opt in dimensionSelectOptions" :key="opt.value" :class="['custom-option', { selected: edDimension === opt.value }]" @click="selectOption('dimension', opt.value)">{{ opt.label }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>X 坐标</label>
+              <input type="number" v-model="edX" placeholder="0">
+            </div>
+            <div class="form-group">
+              <label>Y 坐标</label>
+              <input type="number" v-model="edY" placeholder="64">
+            </div>
+            <div class="form-group">
+              <label>Z 坐标</label>
+              <input type="number" v-model="edZ" placeholder="0">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>贡献/维护人员</label>
+            <div class="tags-input-wrapper" @click="$refs.contributorInput.focus()">
+              <div class="tags-list">
+                <span v-for="(tag, ti) in contributors.tags.value" :key="ti" class="editor-tag">
+                  {{ tag }}
+                  <span class="editor-tag-remove" @click="contributors.removeTag(ti)"><i class="fas fa-times"></i></span>
+                </span>
+              </div>
+              <input ref="contributorInput" type="text" placeholder="输入名称后按回车或空格添加..." @keydown="onContributorKeydown" @blur="commitContributorInput($event.target)">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>使用说明</label>
+            <div class="sortable-list">
+              <div v-for="(item, idx) in instructions.items.value" :key="idx" class="sortable-item" draggable="true" @dragstart="onDragStart('instructions', idx, $event)" @dragover="onDragOver" @dragenter="onDragEnter('instructions', idx, $event)" @dragleave="onDragLeave" @drop="onDrop('instructions', idx, $event)" @dragend="onDragEnd">
+                <span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>
+                <span :class="['item-type-badge', 'badge-' + item.type]">{{ item.type === 'text' ? '文字' : item.type === 'image' ? '图片' : '视频' }}</span>
+                <textarea v-if="item.type === 'text'" class="item-content" rows="2" placeholder="输入文字内容..." :value="item.content" @input="instructions.updateContent(idx, $event.target.value)"></textarea>
+                <input v-else-if="item.type === 'image'" type="text" class="item-content" placeholder="输入图片URL..." :value="item.content" @input="instructions.updateContent(idx, $event.target.value)">
+                <input v-else type="text" class="item-content" placeholder="BV1xxxxxxxxxx 或 bilibili 视频地址" :value="item.content" @input="instructions.updateContent(idx, $event.target.value)">
+                <button type="button" class="remove-item-btn" @click="instructions.removeItem(idx)"><i class="fas fa-trash-alt"></i></button>
+              </div>
+            </div>
+            <div class="add-item-row">
+              <button type="button" class="add-item-btn" @click="instructions.addItem('text')"><i class="fas fa-plus"></i> 添加文字</button>
+              <button type="button" class="add-item-btn" @click="instructions.addItem('image')"><i class="fas fa-image"></i> 添加图片</button>
+              <button type="button" class="add-item-btn" @click="instructions.addItem('video')"><i class="fas fa-video"></i> 添加视频</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>注意事项</label>
+            <div class="sortable-list">
+              <div v-for="(item, idx) in notes.items.value" :key="idx" class="sortable-item" draggable="true" @dragstart="onDragStart('notes', idx, $event)" @dragover="onDragOver" @dragenter="onDragEnter('notes', idx, $event)" @dragleave="onDragLeave" @drop="onDrop('notes', idx, $event)" @dragend="onDragEnd">
+                <span class="drag-handle"><i class="fas fa-grip-vertical"></i></span>
+                <span :class="['item-type-badge', 'badge-' + item.type]">{{ item.type === 'text' ? '文字' : item.type === 'image' ? '图片' : '视频' }}</span>
+                <textarea v-if="item.type === 'text'" class="item-content" rows="2" placeholder="输入文字内容..." :value="item.content" @input="notes.updateContent(idx, $event.target.value)"></textarea>
+                <input v-else-if="item.type === 'image'" type="text" class="item-content" placeholder="输入图片URL..." :value="item.content" @input="notes.updateContent(idx, $event.target.value)">
+                <input v-else type="text" class="item-content" placeholder="BV1xxxxxxxxxx 或 bilibili 视频地址" :value="item.content" @input="notes.updateContent(idx, $event.target.value)">
+                <button type="button" class="remove-item-btn" @click="notes.removeItem(idx)"><i class="fas fa-trash-alt"></i></button>
+              </div>
+            </div>
+            <div class="add-item-row">
+              <button type="button" class="add-item-btn" @click="notes.addItem('text')"><i class="fas fa-plus"></i> 添加文字</button>
+              <button type="button" class="add-item-btn" @click="notes.addItem('image')"><i class="fas fa-image"></i> 添加图片</button>
+              <button type="button" class="add-item-btn" @click="notes.addItem('video')"><i class="fas fa-video"></i> 添加视频</button>
+            </div>
+          </div>
+          <div class="editor-actions">
+            <button type="button" class="btn-generate-json" @click="generateJson"><i class="fas fa-save"></i> 生成 JSON</button>
+          </div>
+        </div>
+      </template>
+    </EditorModal>
+
+    <JsonOutputModal v-model="jsonOutputOpen" :json-text="jsonOutputText" />
   </main>
 </template>
 
 <style scoped>
+@import '../styles/editor-form.css';
+
 .facilities-hero {
   height: 35vh;
   min-height: 300px;
@@ -407,6 +741,37 @@ function onFilterChange({ key, value }) {
   flex-wrap: wrap;
 }
 
+/* Modal badges */
+.badge.large-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.badge-status-online {
+  background: #e8fceb;
+  color: #15803d;
+}
+
+.badge-status-maintenance {
+  background: #fff8d6;
+  color: #b45309;
+}
+
+.badge-status-offline {
+  background: #feebeb;
+  color: #b91c1c;
+}
+
+.badge-type {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
 .modal-actions {
   display: flex;
   gap: 8px;
@@ -437,6 +802,26 @@ function onFilterChange({ key, value }) {
   color: #15803d;
   border-color: var(--bl-green);
   background: #e8fceb;
+}
+
+.btn-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  background: transparent;
+  color: var(--bl-accent);
+  border: 1.5px solid var(--bl-accent);
+  border-radius: 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--bl-transition);
+}
+
+.btn-edit:hover {
+  background: var(--bl-accent);
+  color: #fff;
 }
 
 .map-link {
