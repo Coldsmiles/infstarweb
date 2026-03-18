@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import BaseModal from '../components/base/BaseModal.vue';
 import EmptyState from '../components/base/EmptyState.vue';
 
@@ -13,8 +13,27 @@ const modalOpen = ref(false);
 const isMobile = ref(false);
 const qrLoaded = ref(false);
 
+function detectMobileSponsorView() {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+    return false;
+  }
+
+  const userAgent = navigator.userAgent || '';
+  const matchesMobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+  const matchesMobileViewport = window.matchMedia('(max-width: 767.98px)').matches || window.innerWidth < 768;
+
+  return matchesMobileUserAgent || matchesMobileViewport;
+}
+
+function updateMobileState() {
+  isMobile.value = detectMobileSponsorView();
+}
+
 onMounted(() => {
-  isMobile.value = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+  updateMobileState();
+  window.addEventListener('resize', updateMobileState);
+  window.addEventListener('orientationchange', updateMobileState);
+
   fetch('/data/sponsors.txt')
     .then(r => r.text())
     .then(text => {
@@ -25,6 +44,20 @@ onMounted(() => {
       sponsors.value = [...parsed].reverse(); // newest first
       animateTotal(total);
     });
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateMobileState);
+  window.removeEventListener('orientationchange', updateMobileState);
+});
+
+watch(modalOpen, (open) => {
+  if (open) {
+    updateMobileState();
+    return;
+  }
+
+  qrLoaded.value = false;
 });
 
 function parseSponsors(text) {
