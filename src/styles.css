@@ -86,7 +86,7 @@ img {
 }
 
 .bl-shell {
-  width: min(var(--bl-content-width), calc(100% - 40px));
+  max-width: 1000px;
   margin: 0 auto;
   padding: 0 20px;
 }
