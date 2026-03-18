@@ -62,23 +62,23 @@ const deviceData = {
   pc: {
     title: '电脑版 (Java Edition)',
     recommendations: [
-      { name: 'PCL2', icon: 'fas fa-cube', desc: '界面精美，功能强大的现代化启动器（仅Win）', url: 'https://afdian.net/p/0164034c016c11ebafcb52540025c377', primary: true },
-      { name: 'HMCL', icon: 'fas fa-horse-head', desc: '历史悠久，跨平台支持好 (Win/Mac/Linux)', url: 'https://hmcl.huangyuhui.net/', primary: false },
+      { name: 'PCL2', icon: 'fas fa-cube', desc: '界面精美，功能强大的现代化启动器（仅Win）', url: 'https://pan.aoe.top/Tools/PCL2', primary: true },
+      { name: 'HMCL', icon: 'fas fa-horse-head', desc: '历史悠久，跨平台支持好 (Win/Mac/Linux)', url: 'https://hmcl.huangyuhui.net/download/', primary: false },
     ],
     note: '推荐使用 PCL2 或 HMCL，均支持极大改善游戏体验。',
   },
   ios: {
     title: 'iOS 设备',
     recommendations: [
-      { name: 'PojavLauncher', icon: 'fab fa-app-store-ios', desc: 'iOS 上运行 Java 版的唯一选择', url: 'https://apps.apple.com/us/app/pojavlauncher/id6443526546', primary: true },
+      { name: 'PojavLauncher', icon: 'fab fa-app-store-ios', desc: 'iOS 上运行 Java 版的唯一选择', url: 'https://pojavlauncher.net/', primary: true },
     ],
     note: '需要 iOS 14.0 或更高版本。若未越狱，请保持 JIT 开启以获得最佳性能。',
   },
   android: {
     title: '安卓设备',
     recommendations: [
-      { name: 'FCL 启动器', icon: 'fab fa-android', desc: '基于 FoldCraft 的高性能启动器', url: 'https://github.com/FoldCraftLauncher/FoldCraftLauncher/releases', primary: true },
-      { name: 'PojavLauncher', icon: 'fas fa-gamepad', desc: '经典的移动端 Java 版启动器', url: 'https://play.google.com/store/apps/details?id=net.kdt.pojavlaunch', primary: false },
+      { name: 'FCL 启动器', icon: 'fab fa-android', desc: '基于 FoldCraft 的高性能启动器', url: 'https://fcl-team.github.io/pages/download.html', primary: true },
+      { name: 'PojavLauncher', icon: 'fas fa-gamepad', desc: '经典的移动端 Java 版启动器', url: 'https://pojavlauncher.net/', primary: false },
     ],
     note: '建议设备拥有至少 4GB 运存以流畅运行 1.21 版本。',
   },
