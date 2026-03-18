@@ -22,24 +22,33 @@
         "title": "海沫",
         "logo": "https://s41.ax1x.com/2026/03/18/peeMXvj.jpg",
         "gradient": {
-            "from": "#667eea",
-            "to": "#764ba2"
+            "from": "#00ffff",
+            "to": "#0000ff"
         },
         "dimension": "overworld",
-        "coordinatesSecret": true,
-        "scale": "small",
-        "townType": "industry",
-        "recruitment": "maybe",
+        "coordinatesSecret": false,
+        "scale": "medium",
+        "townType": "building",
+        "recruitment": "welcome",
         "founders": [
-            "jiajia_zZ",
             "Aquaium"
         ],
-        "members": [],
+        "members": [
+            "jiajia_zZ",
+            "hamburbox34",
+            "AnnatarxMelkor",
+            "Chunky_Wu"
+        ],
         "introduction": [
             {
                 "type": "text",
-                "content": "有意加入请联系Aquaium"
+                "content": "无垠的草原，广袤的天空……这是Aquaium(edge)建立海沫的初衷。edge希望玩家可以自由发挥，并且全心投入喜欢的领域中，而不是为了原材料奔波。为此edge和jiajia_zZ在基地建造了一系列基础设施，并且仍不断升级中。我们欢迎每一个富有激情的创作者。"
             }
-        ]
+        ],
+        "coordinates": {
+            "x": 10000,
+            "y": 64,
+            "z": 10000
+        }
     }
 ]
