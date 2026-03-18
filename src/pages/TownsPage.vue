@@ -915,15 +915,17 @@ function generateJson() {
   font-size: 12px;
 }
 
-.badge-scale-small { background: #e8f5e9; color: #2e7d32; }
-.badge-scale-medium { background: #e3f2fd; color: #1565c0; }
-.badge-scale-large { background: #fce4ec; color: #c62828; }
-.badge-type-building { background: #fff3e0; color: #e65100; }
-.badge-type-adventure { background: #f3e5f5; color: #6a1b9a; }
-.badge-type-industry { background: #e0f2f1; color: #00695c; }
-.badge-recruit-welcome { background: #e8f5e9; color: #2e7d32; }
-.badge-recruit-closed { background: #ffebee; color: #c62828; }
-.badge-recruit-maybe { background: #fff8e1; color: #f57f17; }
+.badge-scale-small { background: #dbeafe; color: #1d4ed8; }
+.badge-scale-medium { background: #fef3c7; color: #b45309; }
+.badge-scale-large { background: #fee2e2; color: #b91c1c; }
+
+.badge-type-building { background: #ede9fe; color: #6d28d9; }
+.badge-type-adventure { background: #d1fae5; color: #047857; }
+.badge-type-industry { background: #ffedd5; color: #c2410c; }
+
+.badge-recruit-welcome { background: #e8fceb; color: #15803d; }
+.badge-recruit-closed { background: #feebeb; color: #b91c1c; }
+.badge-recruit-maybe { background: #fef9c3; color: #a16207; }
 
 .btn-share {
   display: inline-flex;

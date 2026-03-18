@@ -79,6 +79,7 @@ const emit = defineEmits(['update:modelValue']);
   border: 1px solid rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: var(--bl-transition);
+  font-size: 13px;
 }
 
 .filter-tag:hover {
@@ -94,6 +95,6 @@ const emit = defineEmits(['update:modelValue']);
 }
 
 .filter-tag__icon {
-  font-size: 0.9em;
+  font-size: 14px;
 }
 </style>
