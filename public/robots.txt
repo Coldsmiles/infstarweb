@@ -3,4 +3,4 @@ Allow: /
 Disallow: /stats/*.json
 Disallow: /stats/*.json$
 
-Sitemap: https://bailuyuan.lunadeer.cn/sitemap.xml
+Sitemap: https://mc.infstar.org/sitemap.xml
