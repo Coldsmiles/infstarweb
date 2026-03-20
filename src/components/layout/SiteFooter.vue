@@ -22,9 +22,7 @@ const siteNav = [
 ];
 
 const friendLinks = [
-  { label: 'MineBBS', href: 'https://www.minebbs.com/threads/x.25611/' },
-  { label: 'MCList', href: 'https://www.mclists.cn/server/7653.html' },
-  { label: 'mcgodx', href: 'https://mcgodx.com/servers/212/' },
+  { label: 'InfStarSkin', href: 'https://skin.infstar.cn' },
 ];
 </script>
 
@@ -36,7 +34,7 @@ const friendLinks = [
           <div class="footer-logo">{{ brand }}</div>
           <p>&copy; 2026 {{ brand }} Minecraft 服务器.</p>
           <p class="footer-icp">
-            <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">蜀ICP备2025160432号</a>
+            <a href="https://icp.gov.moe/?keyword=20260377" target="_blank" rel="noopener noreferrer">萌ICP备20260377号</a>
           </p>
         </div>
 

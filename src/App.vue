@@ -15,7 +15,7 @@ const navItems = [
   { label: '相册', href: '/photo' },
   { label: '数据', href: '/stats' },
   { label: '赞助', href: '/sponsor' },
-  { label: '群聊', href: 'https://qm.qq.com/q/9izlHDoef6', external: true },
+  { label: '群聊', href: 'https://qm.qq.com/q/6hLQs1Tx6g', external: true },
 ];
 
 const activePath = computed(() => route.path);
