@@ -142,7 +142,7 @@ const bentoItems = [
   { key: 'hardware', size: 'small', icon: 'fas fa-server', title: '自有硬件', desc: '物理工作站，永不跑路', bg: 'https://img.lunadeer.cn/i/2024/02/21/65d592e248066.jpg' },
   { key: 'fun', size: 'small', icon: 'fas fa-gamepad', title: '娱乐玩法', desc: '空岛、跑酷、小游戏', bg: 'https://img.lunadeer.cn/i/2025/11/26/692677566b07b.png' },
   { key: 'update', size: 'medium', icon: 'fas fa-sync-alt', title: '紧跟新版', desc: '紧跟 Paper 核心版本更新，始终保持在版本前列。第一时间体验 Minecraft 的最新内容', bg: 'https://img.lunadeer.cn/i/2025/11/26/692697b71431b.png' },
-  { key: 'guide', size: 'medium', icon: 'fas fa-book-open', title: '新手指南', desc: '完善的服务器文档与活跃的社区，帮助你快速上手，加入白鹿原大家庭', bg: 'https://img.lunadeer.cn/i/2025/11/26/692697b7376c7.png' },
+  { key: 'guide', size: 'medium', icon: 'fas fa-book-open', title: '新手指南', desc: '完善的服务器文档与活跃的社区，帮助你快速上手，加入星空之境大家庭', bg: 'https://img.lunadeer.cn/i/2025/11/26/692697b7376c7.png' },
 ];
 
 const medals = ['🥇', '🥈', '🥉'];

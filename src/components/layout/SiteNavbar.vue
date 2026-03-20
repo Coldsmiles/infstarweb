@@ -18,7 +18,7 @@ const props = defineProps({
   },
   logoAlt: {
     type: String,
-    default: '白鹿原 Minecraft 服务器 Logo',
+    default: '星空之境 Minecraft 服务器 Logo',
   },
   ctaLabel: {
     type: String,

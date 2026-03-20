@@ -122,7 +122,7 @@ function setProject(p) {
       <span class="counter-label">累计获得赞助</span>
       <span class="counter-value">¥{{ animatedTotal.toLocaleString('en-US') }}</span>
     </div>
-    <p class="hero-subtitle">因为有你们，白鹿原才能走得更远。</p>
+    <p class="hero-subtitle">因为有你们，星空之境才能走得更远。</p>
   </section>
 
   <main class="sponsor-container">
@@ -194,7 +194,7 @@ function setProject(p) {
         <div class="modal-gift-icon">
           <i class="fas fa-gift"></i>
         </div>
-        <h3 class="modal-title">支持白鹿原服务器</h3>
+        <h3 class="modal-title">支持星空之境服务器</h3>
         <p class="modal-subtitle">您的每一次支持，都将帮助我们提升服务器性能，维持更长久的运营。</p>
       </template>
 

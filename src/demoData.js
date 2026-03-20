@@ -249,7 +249,7 @@ export const playstyles = [
 ];
 
 export const sponsorSummary = {
-  title: '支持白鹿原服务器',
+  title: '支持星空之境服务器',
   description: '延续 sponsor 页面的大额中心化弹窗结构，但把信息整理为更清晰的摘要和行动区。',
   total: '¥42,680',
   supporters: '187',

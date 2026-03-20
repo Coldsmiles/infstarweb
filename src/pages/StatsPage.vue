@@ -193,7 +193,7 @@ function filteredItems(catKey) {
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1 class="hero-title">玩家统计</h1>
-      <p class="hero-subtitle">探索白鹿原的冒险记录</p>
+      <p class="hero-subtitle">探索星空之境的冒险记录</p>
       <p v-if="updatedAt" class="hero-updated">数据更新于 {{ updatedAt }}</p>
     </div>
   </section>

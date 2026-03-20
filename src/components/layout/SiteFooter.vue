@@ -4,7 +4,7 @@ import { RouterLink } from 'vue-router';
 defineProps({
   brand: {
     type: String,
-    default: '白鹿原',
+    default: '星空之境',
   },
 });
 

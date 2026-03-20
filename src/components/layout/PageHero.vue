@@ -2,7 +2,7 @@
 defineProps({
   eyebrow: {
     type: String,
-    default: '白鹿原组件库',
+    default: '星空之境组件库',
   },
   title: {
     type: String,
