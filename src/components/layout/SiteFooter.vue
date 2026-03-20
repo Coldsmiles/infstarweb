@@ -33,9 +33,7 @@ const friendLinks = [
        <div class="footer-col">
           <div class="footer-logo">{{ brand }}</div>
           <p>
-            © 2026 {{ brand }} 星空之境 Minecraft 服务器 ❤️ Coldsmiles_7 
-            · Powered by <a href="https://github.com/LunaDeerMC/bailuyuan" target="_blank" rel="noopener noreferrer">bailuyuan</a> 
-            · GPL-3.0
+            © 2026 {{ brand }} Minecraft 服务器 ❤️ Coldsmiles_7 · Powered by <a href="https://github.com/LunaDeerMC/bailuyuan" target="_blank" rel="noopener noreferrer">bailuyuan</a>
           </p>
           <p class="footer-icp">
             <a href="https://icp.gov.moe/?keyword=20260377" target="_blank" rel="noopener noreferrer">萌ICP备20260377号</a>
