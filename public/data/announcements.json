@@ -1,6 +1,6 @@
 [
     {
-        "title": "【26Q2Q3】官网首页封面图片投稿",
+        "title": "官网首页封面图片投稿",
         "intro": "服务器官方网站首页封面图片征集投稿活动。",
         "time": "2026-03-10",
         "category": "activity",
@@ -60,26 +60,6 @@
             {
                 "type": "text",
                 "content": "2026年3月31日"
-            }
-        ]
-    },
-    {
-        "title": "服务器新增假人、无限末地门结构",
-        "intro": "服务器维护更新。",
-        "time": "2026-03-10",
-        "category": "maintenance",
-        "content": [
-            {
-                "type": "text",
-                "content": "服务器更新维护，本次维护新增如下内容："
-            },
-            {
-                "type": "text",
-                "content": "1. 服务器新人假人系统（Bot/FakePlayer），详情参考文档里对假人的说明：https://mc.infstar.org/doc.html"
-            },
-            {
-                "type": "text",
-                "content": "2. 服务器重写了末地传送门结构生成规则，重写后与基岩版一致，为不限数量随机生成，便于生活在新出生点的玩家有便捷的末地传送门可用；"
             }
         ]
     }
