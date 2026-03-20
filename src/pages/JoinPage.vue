@@ -120,19 +120,19 @@ const deviceTutorials = {
     { title: '登录账号', desc: '打开启动器（PCL2/HMCL），选择"添加账号"。推荐使用 Microsoft 账号登录拥有正版 Minecraft 的账户。' },
     { title: '安装游戏', desc: '在启动器中创建一个新游戏配置，选择游戏版本 <strong>1.21.x</strong>。强烈建议安装 <a href="https://fabricmc.net/" target="_blank">Fabric</a> 加载器以获得更好的模组支持和性能优化。' },
     { title: '启动游戏', desc: '等待游戏资源文件下载完成，点击启动游戏直到看到 Minecraft 主界面。' },
-    { title: '加入服务器', desc: '点击"多人游戏" → "添加服务器"', serverAddr: 'mcpure.lunadeer.cn' },
+    { title: '加入服务器', desc: '点击"多人游戏" → "添加服务器"', serverAddr: 'mc.infstar.cn' },
   ],
   ios: [
     { title: '准备环境', desc: '打开 PojavLauncher。若您的设备未越狱，请确保已启用 JIT（Just-In-Time）以获得可玩的帧率。' },
     { title: '登录账号', desc: '点击"添加账户"，选择"Microsoft 账户"并完成登录流程。' },
     { title: '下载并启动', desc: '点击"创建新配置"，选择版本 <strong>1.21.x</strong>。建议调整内存分配至设备总内存的 50% 左右，然后点击"启动"。' },
-    { title: '加入服务器', desc: '进入主界面后，选择 Multiplayer → Add Server', serverAddr: 'mcpure.lunadeer.cn' },
+    { title: '加入服务器', desc: '进入主界面后，选择 Multiplayer → Add Server', serverAddr: 'mc.infstar.cn' },
   ],
   android: [
     { title: '配置启动器', desc: '打开 FCL 或 PojavLauncher。给予必要的存储权限。' },
     { title: '登录账号', desc: '在账户设置中添加 Microsoft 账户。' },
     { title: '安装版本', desc: '下载 <strong>1.21.x</strong> 游戏核心。FCL 用户可直接使用内置下载源加速下载。建议安装 OptiFine 或 Fabric+Sodium 以提升帧率。' },
-    { title: '加入服务器', desc: '启动游戏后，点击 Multiplayer → Add Server', serverAddr: 'mcpure.lunadeer.cn' },
+    { title: '加入服务器', desc: '启动游戏后，点击 Multiplayer → Add Server', serverAddr: 'mc.infstar.cn' },
   ],
 };
 

@@ -87,7 +87,7 @@ applyTo: "src/**/*.vue, src/**/*.js, src/**/*.css, vite.config.js, package.json,
   - rotating subtitle words with the same cadence
   - runtime timer from `2021-09-14T09:57:59`
   - copy-to-clipboard server IP box and tooltip behavior
-  - live server status from `https://api.mcstatus.io/v2/status/java/mcpure.lunadeer.cn`
+  - live server status from `https://api.mcstatus.io/v2/status/java/mc.infstar.cn`
   - online player tooltip list and offline fallback states
   - bento feature grid with the same card count and hierarchy
   - top sponsor section built from `data/sponsors.txt`
@@ -264,7 +264,7 @@ applyTo: "src/**/*.vue, src/**/*.js, src/**/*.css, vite.config.js, package.json,
 - Prefer Vue state and template bindings over direct DOM mutation, but keep the visible behavior identical.
 - Keep fetch paths relative for local files.
 - Maintain current external integrations:
-  - `https://api.mcstatus.io/v2/status/java/mcpure.lunadeer.cn`
+  - `https://api.mcstatus.io/v2/status/java/mc.infstar.cn`
   - `https://minotar.net/...`
   - `https://crafatar.com/...`
   - Bilibili embed iframes

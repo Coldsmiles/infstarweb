@@ -110,7 +110,7 @@ export const routeSeo = {
   home: {
     path: '/',
     title: '星空之境 Minecraft 服务器 - 永不换档的纯净原版生存Minecraft服务器',
-    description: '星空之境是一个永不换档的纯净原版生存Minecraft我的世界服务器，支持Java版与基岩版互通。提供免费圈地保护、自研管理插件，紧跟最新游戏版本更新。物理工作站保障7×24小时稳定运行，实时查看服务器在线状态与众筹进展。立即加入星空之境，开启纯净原版生存冒险之旅！服务器地址：mcpure.lunadeer.cn',
+    description: '星空之境是一个永不换档的纯净原版生存Minecraft我的世界服务器，支持Java版与基岩版互通。提供免费圈地保护、自研管理插件，紧跟最新游戏版本更新。物理工作站保障7×24小时稳定运行，实时查看服务器在线状态与众筹进展。立即加入星空之境，开启纯净原版生存冒险之旅！服务器地址：mc.infstar.cn',
     keywords: '星空之境Minecraft,星空之境我的世界,星空之境mc,Minecraft服务器,我的世界,我的世界服务器,纯净服务器,原版服务器,纯净生存,基岩互通,星空之境,MC服务器,永不换档,免费圈地,Minecraft中国',
     ogImage: HOME_OG_IMAGE,
     ogImageAlt: '星空之境 Minecraft 服务器主页视觉图',
