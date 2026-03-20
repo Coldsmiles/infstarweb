@@ -37,7 +37,7 @@ const seconds = ref(0);
 let runtimeTimer = null;
 
 function startRuntime() {
-  const start = new Date('2021-09-14T09:57:59').getTime();
+  const start = new Date('2026-03-04T12:00:00').getTime();
   function update() {
     const diff = Date.now() - start;
     days.value = Math.floor(diff / 86400000);
@@ -52,7 +52,7 @@ function startRuntime() {
 // --- Copy IP ---
 const copied = ref(false);
 function copyIp() {
-  navigator.clipboard.writeText('mcpure.lunadeer.cn').then(() => {
+  navigator.clipboard.writeText('mc.infstar.cn').then(() => {
     copied.value = true;
     setTimeout(() => { copied.value = false; }, 2000);
   });
@@ -66,7 +66,7 @@ const playersLoading = ref(true);
 
 async function fetchServerStatus() {
   try {
-    const res = await fetch('https://api.mcstatus.io/v2/status/java/mcpure.lunadeer.cn');
+    const res = await fetch('https://api.mcstatus.io/v2/status/java/mc.infstar.cn');
     const data = await res.json();
     if (data.online) {
       onlineText.value = `在线人数: ${data.players.online} / ${data.players.max}`;
@@ -153,7 +153,7 @@ const medals = ['🥇', '🥈', '🥉'];
   <header class="home-hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-      <h1 class="hero-title">白鹿原</h1>
+      <h1 class="hero-title">星空之境</h1>
       <div class="hero-subtitle-container">
         <p class="hero-subtitle">
           <span>永不换档的</span>
@@ -169,7 +169,7 @@ const medals = ['🥇', '🥈', '🥉'];
       </div>
       <div class="hero-actions">
         <div class="server-ip-box" @click="copyIp">
-          <span>mcpure.lunadeer.cn</span>
+          <span>mc.infstar.cn</span>
           <i :class="copied ? 'fas fa-check' : 'fas fa-copy'"></i>
           <span v-if="copied" class="copy-toast">已复制!</span>
         </div>
