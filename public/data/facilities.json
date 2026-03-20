@@ -1,3 +1,29 @@
 [
-
+{
+    "title": "大叔牌沼泽刷怪塔（含女巫）",
+    "intro": "产量不知道多少，已为红石、粘液球、火药、骨头、木棍进行分类",
+    "type": "resource",
+    "dimension": "overworld",
+    "status": "online",
+    "coordinates": {
+        "x": 348,
+        "y": 63,
+        "z": -1955
+    },
+    "contributors": [
+        "Coldsmiles_7"
+    ],
+    "instructions": [
+        {
+            "type": "text",
+            "content": "在挂机平台处召唤假人挂机即可"
+        }
+    ],
+    "notes": [
+        {
+            "type": "text",
+            "content": "关闭伪和平"
+        }
+    ]
+}
 ]

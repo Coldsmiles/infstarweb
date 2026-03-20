@@ -1,3 +1,27 @@
 [
-
+{
+    "title": "星核猎手",
+    "logo": "",
+    "gradient": {
+        "from": "#66eae8",
+        "to": "#0fc26f"
+    },
+    "dimension": "overworld",
+    "coordinatesSecret": true,
+    "scale": "small",
+    "townType": "building",
+    "recruitment": "maybe",
+    "founders": [
+        "Coldsmiles_7"
+    ],
+    "members": [
+        "Coldsmiles_7"
+    ],
+    "introduction": [
+        {
+            "type": "text",
+            "content": "服务器管理团队"
+        }
+    ]
+}
 ]
