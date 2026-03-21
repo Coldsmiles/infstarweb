@@ -1,7 +1,7 @@
 const SITE_URL = 'https://mc.infstar.org';
 const SITE_NAME = '星空之境 Minecraft 服务器';
 const SITE_DESCRIPTION = '星空之境是一个永不换档的纯净原版生存 Minecraft 服务器，支持 Java 版与基岩版互通。提供免费圈地保护、自研管理插件，紧跟最新游戏版本更新。';
-const DEFAULT_OG_IMAGE = 'https://img.lunadeer.cn/i/2024/04/22/6625ce6c8ddc1.png';
+const DEFAULT_OG_IMAGE = 'https://img.infstar.cn/i/2026/03/21/69be583695ff1.png';
 const HOME_OG_IMAGE = 'https://img.lunadeer.cn/i/2025/11/26/69267755e14e3.png';
 const ROBOTS_CONTENT = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
 
