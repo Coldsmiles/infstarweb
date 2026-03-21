@@ -23,7 +23,7 @@ const activePath = computed(() => route.path);
 
 // iframe pages don't show footer; they fill the viewport
 const isIframePage = computed(() =>
-  ['/doc', '/map', '/photo'].includes(route.path)
+  ['/doc', '/map', '/status', '/photo'].includes(route.path)
 );
 
 </script>

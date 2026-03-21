@@ -59,6 +59,13 @@ export const routes = [
     meta: { seo: routeSeo.doc },
   },
   {
+    path: '/status',
+    alias: ['/status.html'],
+    name: 'status',
+    component: () => import('./pages/StatusPage.vue'),
+    meta: { seo: routeSeo.status },
+  },
+  {
     path: '/map',
     alias: ['/map.html'],
     name: 'map',
