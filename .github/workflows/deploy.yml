@@ -80,7 +80,7 @@ jobs:
             exit 0
           fi
 
-          HOST="bailuyuan.lunadeer.cn"
+          HOST="mc.infstar.org"
           curl -s -X POST "https://api.indexnow.org/indexnow" \
             -H "Content-Type: application/json" \
             -d "{
