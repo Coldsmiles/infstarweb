@@ -270,7 +270,7 @@ applyTo: "src/**/*.vue, src/**/*.js, src/**/*.css, vite.config.js, package.json,
   - Bilibili embed iframes
   - `https://schema.lunadeer.cn/...`
   - `https://mcmap.lunadeer.cn/`
-  - `https://mcphoto.lunadeer.cn/`
+  - `https://mcphoto.infstar.cn/`
 - Render fallback text instead of crashing when remote requests fail, matching the legacy behavior.
 
 ## Recommended Migration Order

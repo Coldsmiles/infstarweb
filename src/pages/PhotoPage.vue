@@ -1,7 +1,7 @@
 <template>
   <iframe
     class="iframe-fullpage"
-    src="https://mcphoto.lunadeer.cn/"
+    src="https://mcphoto.infstar.cn/"
     frameborder="0"
     allowfullscreen
   ></iframe>
