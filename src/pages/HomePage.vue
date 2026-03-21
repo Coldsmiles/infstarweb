@@ -135,9 +135,9 @@ async function fetchCrowdfunding() {
 // --- Bento features ---
 const bentoItems = [
   { key: 'pure', size: 'large', icon: 'fas fa-leaf', title: '纯净原版', desc: '无纷繁复杂的 Mod，无破坏平衡的插件。一切简单的就像是单机模式的共享一般', bg: 'https://img.lunadeer.cn/i/2024/02/21/65d592eb4afad.jpg' },
-  { key: 'dev', size: 'medium', icon: 'fas fa-code', title: '深度自研', desc: '全栈自研核心，拒绝卡脖子，保证可持续发展', bg: 'https://img.lunadeer.cn/i/2025/11/26/6926982718ba8.png' },
+  { key: 'dev', size: 'medium', icon: 'fas fa-code', title: '生电核心', desc: '基于Paper，尽可能修复被破坏的原版特性，保证可持续发展', bg: 'https://img.lunadeer.cn/i/2025/11/26/6926982718ba8.png' },
   { key: 'params', size: 'medium', icon: 'fas fa-sliders-h', title: '原汁原味', desc: '生物生成、红石参数与单机高度一致', bg: 'https://img.lunadeer.cn/i/2025/11/26/6926775006dea.jpg' },
-  { key: 'land', size: 'small', icon: 'fas fa-home', title: '免费圈地', desc: '2048*2048 超大领地', bg: 'https://img.lunadeer.cn/i/2024/02/21/65d592ea6faa1.jpg' },
+  { key: 'land', size: 'small', icon: 'fas fa-home', title: '免费圈地', desc: '2048*2048 超大城镇领地', bg: 'https://img.lunadeer.cn/i/2024/02/21/65d592ea6faa1.jpg' },
   { key: 'bedrock', size: 'small', icon: 'fas fa-mobile-alt', title: '基岩互通', desc: '手机电脑随时畅玩', bg: 'https://img.lunadeer.cn/i/2025/11/26/692677560db46.png' },
   { key: 'hardware', size: 'small', icon: 'fas fa-server', title: '自有硬件', desc: '物理工作站，永不跑路', bg: 'https://img.lunadeer.cn/i/2024/02/21/65d592e248066.jpg' },
   { key: 'fun', size: 'small', icon: 'fas fa-gamepad', title: '娱乐玩法', desc: '空岛、跑酷、小游戏', bg: 'https://img.lunadeer.cn/i/2025/11/26/692677566b07b.png' },
