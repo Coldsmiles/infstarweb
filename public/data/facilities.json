@@ -25,5 +25,44 @@
             "content": "关闭伪和平"
         }
     ]
-}
+    },
+    {
+    "title": "烤肉机",
+    "intro": "\"以后我可以吃一组，扔一组，再给人一组了，就是这富有\"",
+    "type": "resource",
+    "dimension": "nether",
+    "status": "online",
+    "coordinates": {
+        "x": 127,
+        "y": 128,
+        "z": 40
+    },
+    "contributors": [
+        "Coldsmiles_7"
+    ],
+    "instructions": [
+        {
+            "type": "text",
+            "content": "挂机点挂机"
+        }
+    ],
+    "notes": []
+    },
+    {
+    "title": "贝厂",
+    "intro": "",
+    "type": "resource",
+    "dimension": "end",
+    "status": "online",
+    "coordinates": {
+        "x": -915,
+        "y": 61,
+        "z": 621
+    },
+    "contributors": [
+        "Ylsnif，yuan"
+    ],
+    "instructions": [],
+    "notes": []
+    }
 ]
