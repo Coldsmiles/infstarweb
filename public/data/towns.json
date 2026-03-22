@@ -143,5 +143,59 @@
             "y": 66,
             "z": -1219
         }
+    },
+    {
+        "title": "经济开发区",
+        "logo": "",
+        "gradient": {
+            "from": "#667eea",
+            "to": "#764ba2"
+        },
+        "dimension": "overworld",
+        "coordinatesSecret": false,
+        "scale": "small",
+        "townType": "building",
+        "recruitment": "welcome",
+        "founders": [
+            "Max_Verstappen3"
+        ],
+        "members": [
+            "swininggoffish",
+            "KKKara",
+            "BE.Zhou_Guanyu8",
+            "LiuGanYi"
+        ],
+        "introduction": [
+            {
+                "type": "image",
+                "content": "http://i0.hdslb.com/bfs/new_dyn/802a2cbe0aa93a8db045e0208921531d441905970.png"
+            }
+        ],
+        "coordinates": {
+            "x": 500043,
+            "y": 0,
+            "z": 499859
+        }
+    },
+    {
+        "title": "鹅城",
+        "logo": "http://i0.hdslb.com/bfs/new_dyn/fa1c19b85fd53c1f80d567298e81a0621495743394.jpg",
+        "gradient": {
+            "from": "#ff00c7",
+            "to": "#764ba2"
+        },
+        "dimension": "overworld",
+        "coordinatesSecret": false,
+        "scale": "medium",
+        "townType": "building",
+        "recruitment": "welcome",
+        "founders": [],
+        "members": [],
+        "introduction": [],
+        "coordinates": {
+            "x": 490917,
+            "y": 89,
+            "z": 492536
+        }
     }
 ]
