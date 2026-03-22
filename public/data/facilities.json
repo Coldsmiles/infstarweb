@@ -49,8 +49,8 @@
     "notes": []
     },
     {
-    "title": "贝厂",
-    "intro": "",
+    "title": "潜影贝农场",
+    "intro": "产量1300/H",
     "type": "resource",
     "dimension": "end",
     "status": "online",
@@ -60,9 +60,15 @@
         "z": 621
     },
     "contributors": [
-        "Ylsnif，yuan"
+        "Ylsnif",
+        "yuan"
     ],
-    "instructions": [],
+    "instructions": [
+        {
+            "type": "text",
+            "content": "挂机点挂机"
+        }
+    ],
     "notes": []
     }
 ]
