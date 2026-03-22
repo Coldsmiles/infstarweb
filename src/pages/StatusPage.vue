@@ -1,7 +1,7 @@
 <template>
   <iframe
     class="iframe-fullpage"
-    src="https://mcphoto.infstar.cn/"
+    src="https://api.infstar.cn/404.html"
     frameborder="0"
     allowfullscreen
   ></iframe>
