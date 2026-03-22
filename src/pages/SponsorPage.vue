@@ -206,7 +206,7 @@ function setProject(p) {
             <span>加载中…</span>
           </div>
           <img
-            src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fqr.alipay.com%2F2cz0344fnaulnbybhp04"
+            src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://ifdian.net/a/coldsmile"
             alt="支付宝二维码"
             class="qr-img"
             :style="{ display: qrLoaded ? 'block' : 'none' }"
@@ -219,7 +219,7 @@ function setProject(p) {
       <!-- Mobile Button -->
       <div v-else class="mobile-btn-view">
         <a
-          href="https://qr.alipay.com/2cz0344fnaulnbybhp04"
+          href="https://qr.alipay.com/xdSWwhY59L3"
           class="alipay-btn"
           target="_blank"
           rel="noopener"
