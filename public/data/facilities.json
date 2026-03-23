@@ -344,5 +344,27 @@
             }
         ],
         "notes": []
+    },
+    {
+        "title": "沼泽刷怪塔",
+        "intro": "位于雪北县的沼泽刷怪塔",
+        "type": "resource",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 2060,
+            "y": 70,
+            "z": -3440
+        },
+        "contributors": [
+            "Coolog5"
+        ],
+        "instructions": [
+            {
+                "type": "text",
+                "content": "在高空挂机后，从平台箱子中取用产物"
+            }
+        ],
+        "notes": []
     }
 ]
