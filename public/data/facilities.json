@@ -70,5 +70,71 @@
         }
     ],
     "notes": []
+    },
+    {
+    "title": "灵启牌丐中丐树场",
+    "intro": "支持七树种，产量大约樱花 25107/h，金合欢 14785/h，杜鹃 12421/h，白桦 10470/h，橡树 9742/h，云杉 9534/h，红色蘑菇 26122/h（樱花树预热遮光）",
+    "type": "resource",
+    "dimension": "overworld",
+    "status": "online",
+    "coordinates": {
+        "x": 52,
+        "y": 64,
+        "z": 67
+    },
+    "contributors": [
+        "Coldsmiles_7"
+    ],
+    "instructions": [
+        {
+            "type": "text",
+            "content": "机器为视频中普通版"
+        },
+        {
+            "type": "video",
+            "content": "BV1bYmcBiELg"
+        }
+    ],
+    "notes": [
+        {
+            "type": "text",
+            "content": "不抗卸载，人走关机"
+        },
+        {
+            "type": "video",
+            "content": "BV1bYmcBiELg"
+        }
+    ]
+    },
+    {
+    "title": "监守者伪和平",
+    "intro": "下界坐标X: -1520, Y: 128, Z: -1625",
+    "type": "infrastructure",
+    "dimension": "overworld",
+    "status": "online",
+    "coordinates": {
+        "x": -12118,
+        "y": -52,
+        "z": -13000
+    },
+    "contributors": [
+        "Coldsmiles_7"
+    ],
+    "instructions": [
+        {
+            "type": "text",
+            "content": "拉杆控制地狱门加载器，无矿车运动为关闭"
+        },
+        {
+            "type": "image",
+            "content": "https://img.infstar.cn/i/2026/03/24/69c1a51020562.png"
+        }
+    ],
+    "notes": [
+        {
+            "type": "text",
+            "content": "进出地狱门走无火和无矿车的那边"
+        }
+    ]
     }
 ]
