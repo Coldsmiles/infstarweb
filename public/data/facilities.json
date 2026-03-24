@@ -366,5 +366,44 @@
             }
         ],
         "notes": []
+    },
+    {
+        "title": "凋零骷髅塔",
+        "intro": "获取骨块、煤炭块、合成信标所需的凋零骷髅头颅。配套地狱交通正在建设中",
+        "type": "resource",
+        "dimension": "overworld",
+        "status": "online",
+        "coordinates": {
+            "x": 493520,
+            "y": 165,
+            "z": 508890
+        },
+        "contributors": [
+            "YiiFeng"
+        ],
+        "instructions": [
+            {
+                "type": "text",
+                "content": "双维度设计，需要两处挂机"
+            },
+            {
+                "type": "text",
+                "content": "主世界挂机点：493524 164 508898"
+            },
+            {
+                "type": "text",
+                "content": "地狱顶层挂机点 ：61696 173 63598"
+            },
+            {
+                "type": "text",
+                "content": "骨块和煤炭块爆仓中，按需自取"
+            }
+        ],
+        "notes": [
+            {
+                "type": "text",
+                "content": "总共需要两人挂机，主世界手砍或假人挂机需装备抢夺Ⅲ附魔武器。效率约为16头/min"
+            }
+        ]
     }
 ]
