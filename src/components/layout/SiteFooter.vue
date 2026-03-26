@@ -30,6 +30,7 @@ const friendLinks = [
 const anoutThisSite = [
   { label: 'GitHub', href: 'https://github.com/LunaDeerMC/bailuyuan' },
   { label: 'SiteMap', href: '/sitemap.xml' },
+  { label: 'LunaDeerMC', href: 'https://mc.lunadeer.cn/' },
 ];
 </script>
 
