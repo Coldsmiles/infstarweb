@@ -132,7 +132,7 @@ applyTo: "src/**/*.vue, src/**/*.js, src/**/*.css, vite.config.js, package.json,
   - independent type and dimension filters
   - facility card layout and status indicator styles
   - detail modal content sections
-  - map link format to `https://mcmap.lunadeer.cn/`
+  - map link format to `http://202.189.7.160:50222/`
   - contributor avatar tags from Minotar
   - Bilibili video block rendering in instructions and notes
   - direct link behavior that auto-opens the correct facility modal
@@ -269,7 +269,7 @@ applyTo: "src/**/*.vue, src/**/*.js, src/**/*.css, vite.config.js, package.json,
   - `https://crafatar.com/...`
   - Bilibili embed iframes
   - `https://schema.lunadeer.cn/...`
-  - `https://mcmap.lunadeer.cn/`
+  - `http://202.189.7.160:50222/`
   - `https://mcphoto.infstar.cn/`
 - Render fallback text instead of crashing when remote requests fail, matching the legacy behavior.
 

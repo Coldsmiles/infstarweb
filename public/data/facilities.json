@@ -140,5 +140,31 @@
             "content": "进出地狱门走无火和无矿车的那边"
         }
     ]
+    },
+    {
+    "title": "蛙鸣灯农场",
+    "intro": "蛙蛙队出动！！",
+    "type": "resource",
+    "dimension": "nether",
+    "status": "online",
+    "coordinates": {
+        "x": 565,
+        "y": 128,
+        "z": -112
+    },
+    "contributors": [
+        "Coldsmiles_7"
+    ],
+    "instructions": [
+        {
+            "type": "text",
+            "content": "挂机点挂机，收集在主世界"
+        },
+        {
+            "type": "video",
+            "content": "BV1Rk4y1774n"
+        }
+    ],
+    "notes": []
     }
 ]
