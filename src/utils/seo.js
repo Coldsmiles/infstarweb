@@ -5,6 +5,10 @@ const DEFAULT_OG_IMAGE = 'https://img.lunadeer.cn/i/2024/04/22/6625ce6c8ddc1.png
 const HOME_OG_IMAGE = 'https://img.lunadeer.cn/i/2025/11/26/69267755e14e3.png';
 const ROBOTS_CONTENT = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
 
+import { useHead } from '@unhead/vue';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
 const siteNavigation = [
   { name: '首页', path: '/' },
   { name: '活动公告', path: '/announcements' },
@@ -460,4 +464,54 @@ export function applyRouteSeo(route) {
     ...(typeof seo.structuredData === 'function' ? seo.structuredData() : []),
   ].filter(Boolean);
   replaceJsonLdScripts(structuredData);
+}
+
+export function useRouteSeo() {
+  const route = useRoute();
+  const seo = computed(() => getActiveSeo(route));
+  const canonicalUrl = computed(() => toAbsoluteUrl(seo.value.path));
+  const ogImage = computed(() => seo.value.ogImage || DEFAULT_OG_IMAGE);
+  const ogImageAlt = computed(() => seo.value.ogImageAlt || `${SITE_NAME} 页面预览图`);
+
+  const structuredData = computed(() => {
+    const base = createBaseStructuredData();
+    const routeSpecific =
+      typeof seo.value.structuredData === 'function' ? seo.value.structuredData() : [];
+    return [...base, ...routeSpecific].filter(Boolean);
+  });
+
+  useHead({
+    htmlAttrs: { lang: 'zh-CN' },
+    title: computed(() => seo.value.title),
+    meta: [
+      { name: 'description', content: computed(() => seo.value.description) },
+      { name: 'keywords', content: computed(() => seo.value.keywords) },
+      { name: 'author', content: SITE_NAME },
+      { name: 'robots', content: ROBOTS_CONTENT },
+      { name: 'application-name', content: SITE_NAME },
+      { name: 'apple-mobile-web-app-title', content: SITE_NAME },
+      { property: 'og:type', content: computed(() => seo.value.type || 'website') },
+      { property: 'og:url', content: canonicalUrl },
+      { property: 'og:title', content: computed(() => seo.value.title) },
+      { property: 'og:description', content: computed(() => seo.value.description) },
+      { property: 'og:image', content: ogImage },
+      { property: 'og:image:alt', content: ogImageAlt },
+      { property: 'og:site_name', content: SITE_NAME },
+      { property: 'og:locale', content: 'zh_CN' },
+      { property: 'twitter:card', content: computed(() => seo.value.twitterCard || 'summary') },
+      { property: 'twitter:url', content: canonicalUrl },
+      { property: 'twitter:title', content: computed(() => seo.value.title) },
+      { property: 'twitter:description', content: computed(() => seo.value.description) },
+      { property: 'twitter:image', content: ogImage },
+      { property: 'twitter:image:alt', content: ogImageAlt },
+    ],
+    link: [{ rel: 'canonical', href: canonicalUrl }],
+    script: [
+      {
+        type: 'application/ld+json',
+        key: 'structured-data',
+        innerHTML: computed(() => JSON.stringify(structuredData.value)),
+      },
+    ],
+  });
 }

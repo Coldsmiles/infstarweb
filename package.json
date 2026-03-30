@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite-ssg build",
     "preview": "vite preview",
     "update:stats": "python scripts/statsprocess.py"
   },
   "dependencies": {
+    "@unhead/vue": "^2.1.12",
     "marked": "^17.0.4",
+    "vite-ssg": "^28.3.0",
     "vue": "^3.5.13",
     "vue-router": "^4.6.4"
   },

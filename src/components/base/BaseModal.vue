@@ -36,6 +36,7 @@ const handleKeydown = (event) => {
 watch(
   () => props.modelValue,
   (open) => {
+    if (typeof document === 'undefined') return;
     document.body.classList.toggle('bl-modal-open', open);
     if (open) {
       window.addEventListener('keydown', handleKeydown);
@@ -47,6 +48,7 @@ watch(
 );
 
 onBeforeUnmount(() => {
+  if (typeof document === 'undefined') return;
   document.body.classList.remove('bl-modal-open');
   window.removeEventListener('keydown', handleKeydown);
 });

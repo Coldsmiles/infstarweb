@@ -1,10 +1,13 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import SiteNavbar from './components/layout/SiteNavbar.vue';
 import AnnouncementMarquee from './components/layout/AnnouncementMarquee.vue';
 import SiteFooter from './components/layout/SiteFooter.vue';
 import { fetchAnnouncementsData } from './composables/useAnnouncementsData.js';
+import { useRouteSeo } from './utils/seo';
+
+useRouteSeo();
 
 const route = useRoute();
 const importantAnnouncements = ref([]);
@@ -32,13 +35,15 @@ const isIframePage = computed(() =>
   ['/doc', '/map', '/photo'].includes(route.path)
 );
 
-fetchAnnouncementsData()
-  .then(({ important }) => {
-    importantAnnouncements.value = important;
-  })
-  .catch((error) => {
-    console.error('Failed to load important announcements:', error);
-  });
+onMounted(() => {
+  fetchAnnouncementsData()
+    .then(({ important }) => {
+      importantAnnouncements.value = important;
+    })
+    .catch((error) => {
+      console.error('Failed to load important announcements:', error);
+    });
+});
 
 </script>
 

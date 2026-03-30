@@ -1,18 +1,16 @@
-import { createApp } from 'vue';
+import { ViteSSG } from 'vite-ssg';
 import App from './App.vue';
-import router from './router';
+import { routes } from './router';
 import './styles.css';
-import { applyRouteSeo } from './utils/seo';
 
-const app = createApp(App);
-
-router.afterEach((to) => {
-	applyRouteSeo(to);
-});
-
-app.use(router);
-
-router.isReady().then(() => {
-	applyRouteSeo(router.currentRoute.value);
-	app.mount('#app');
-});
+export const createApp = ViteSSG(
+	App,
+	{
+		routes,
+		scrollBehavior(to, from, savedPosition) {
+			if (to.hash) return { el: to.hash, behavior: 'smooth' };
+			if (savedPosition) return savedPosition;
+			return { top: 0 };
+		},
+	},
+);
