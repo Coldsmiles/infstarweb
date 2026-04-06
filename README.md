@@ -93,6 +93,8 @@ npm run preview
 
 维护这些内容时，优先保持现有数据格式不变。页面逻辑依赖这些文件的既有字段结构与解析约定。
 
+其中 `public/data/announcements.json` 当前直接使用顶层 JSON 数组结构，每条公告对象支持 `marquee: true | false` 来控制是否出现在导航栏下方的滚动横幅中。
+
 ## 玩家统计更新
 
 仓库提供了一个 Python 脚本，用于批量抓取玩家统计 JSON，并生成 `public/stats/summary.json`：

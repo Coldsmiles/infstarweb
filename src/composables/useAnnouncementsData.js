@@ -1,17 +1,16 @@
-function normalizeImportantMessages(payload) {
-  if (!Array.isArray(payload?.important)) {
-    return [];
-  }
-
-  return payload.important
-    .filter((item) => typeof item === 'string')
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
+import { normalizeAnnouncementItem } from '../utils/announcements.js';
 
 function normalizeAnnouncementsList(payload) {
   if (Array.isArray(payload)) {
     return payload.filter(Boolean);
+  }
+
+  if (Array.isArray(payload?.list)) {
+    return payload.list.filter(Boolean);
+  }
+
+  if (Array.isArray(payload?.announcements?.list)) {
+    return payload.announcements.list.filter(Boolean);
   }
 
   if (Array.isArray(payload?.announcements)) {
@@ -23,8 +22,9 @@ function normalizeAnnouncementsList(payload) {
 
 function normalizeAnnouncementsPayload(payload) {
   return {
-    important: normalizeImportantMessages(payload),
-    announcements: normalizeAnnouncementsList(payload),
+    announcements: normalizeAnnouncementsList(payload)
+      .map((item) => normalizeAnnouncementItem(item))
+      .filter(Boolean),
   };
 }
 
@@ -49,8 +49,7 @@ export function fetchAnnouncementsData(options = {}) {
       });
   }
 
-  return announcementsRequest.then(({ important, announcements }) => ({
-    important: [...important],
+  return announcementsRequest.then(({ announcements }) => ({
     announcements: [...announcements],
   }));
 }

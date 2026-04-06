@@ -5,12 +5,13 @@ import SiteNavbar from './components/layout/SiteNavbar.vue';
 import AnnouncementMarquee from './components/layout/AnnouncementMarquee.vue';
 import SiteFooter from './components/layout/SiteFooter.vue';
 import { fetchAnnouncementsData } from './composables/useAnnouncementsData.js';
+import { getAnnouncementMarqueeHeight, groupAnnouncementMarquees } from './utils/announcements.js';
 import { useRouteSeo } from './utils/seo';
 
 useRouteSeo();
 
 const route = useRoute();
-const importantAnnouncements = ref([]);
+const announcements = ref([]);
 
 const navItems = [
   { label: '文档', href: '/doc' },
@@ -25,9 +26,10 @@ const navItems = [
 ];
 
 const activePath = computed(() => route.path);
-const hasImportantAnnouncements = computed(() => importantAnnouncements.value.length > 0);
+const marqueeGroups = computed(() => groupAnnouncementMarquees(announcements.value));
+const hasMarqueeAnnouncements = computed(() => marqueeGroups.value.length > 0);
 const appShellStyle = computed(() => ({
-  '--bl-banner-height': hasImportantAnnouncements.value ? '34px' : '0px',
+  '--bl-banner-height': getAnnouncementMarqueeHeight(marqueeGroups.value.length),
 }));
 
 // iframe pages don't show footer; they fill the viewport
@@ -37,11 +39,11 @@ const isIframePage = computed(() =>
 
 onMounted(() => {
   fetchAnnouncementsData()
-    .then(({ important }) => {
-      importantAnnouncements.value = important;
+    .then(({ announcements: data }) => {
+      announcements.value = data;
     })
     .catch((error) => {
-      console.error('Failed to load important announcements:', error);
+      console.error('Failed to load announcements:', error);
     });
 });
 
@@ -50,7 +52,7 @@ onMounted(() => {
 <template>
   <div class="app-shell" :style="appShellStyle">
     <SiteNavbar :items="navItems" :active-path="activePath" />
-    <AnnouncementMarquee v-if="hasImportantAnnouncements" :items="importantAnnouncements" />
+    <AnnouncementMarquee v-if="hasMarqueeAnnouncements" :groups="marqueeGroups" />
     <router-view />
     <SiteFooter v-if="!isIframePage" />
   </div>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import FilterPanel from '../components/shared/FilterPanel.vue';
 import EmptyState from '../components/base/EmptyState.vue';
@@ -7,6 +7,11 @@ import EditorModal from '../components/shared/EditorModal.vue';
 import JsonOutputModal from '../components/shared/JsonOutputModal.vue';
 import { fetchAnnouncementsData } from '../composables/useAnnouncementsData.js';
 import { useSortableList } from '../composables/useEditorHelpers.js';
+import {
+  ANNOUNCEMENT_CATEGORY_META,
+  ANNOUNCEMENT_OPEN_EVENT,
+  generateAnnouncementAnchorId,
+} from '../utils/announcements.js';
 
 const route = useRoute();
 
@@ -25,6 +30,7 @@ const edTitle = ref('');
 const edIntro = ref('');
 const edTime = ref('');
 const edCategory = ref('activity');
+const edMarquee = ref(false);
 const openSelects = ref({});
 const content = useSortableList();
 const dragState = ref({ listName: null, fromIdx: null });
@@ -43,13 +49,14 @@ function onSecretKey(e) {
 
 onMounted(() => {
   document.addEventListener('keydown', onSecretKey);
+  window.addEventListener(ANNOUNCEMENT_OPEN_EVENT, handleMarqueeOpen);
   fetchAnnouncementsData()
     .then(({ announcements: data }) => {
       const sortedAnnouncements = [...data].sort((a, b) => new Date(b.time) - new Date(a.time));
       announcements.value = sortedAnnouncements;
       // Expand first item by default
       if (sortedAnnouncements.length > 0) {
-        expandedId.value = generateAnchorId(sortedAnnouncements[0]);
+        expandedId.value = getAnnouncementId(sortedAnnouncements[0]);
       }
       nextTick(() => handleHash());
     })
@@ -60,42 +67,58 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   document.removeEventListener('keydown', onSecretKey);
+  window.removeEventListener(ANNOUNCEMENT_OPEN_EVENT, handleMarqueeOpen);
 });
+
+watch(
+  () => route.hash,
+  () => {
+    nextTick(() => handleHash());
+  }
+);
 
 // Hash-based deep linking
 function handleHash() {
   const hash = route.hash.replace('#', '');
   if (!hash) return;
-  const match = announcements.value.find(item => generateAnchorId(item) === hash);
-  if (match) {
-    expandedId.value = hash;
-    nextTick(() => {
-      const el = document.getElementById(hash);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
-  }
+  openAnnouncementById(hash);
 }
 
-function generateAnchorId(item) {
-  const raw = (item.time || '') + '_' + (item.title || '');
-  let hash = 0;
-  for (let i = 0; i < raw.length; i++) {
-    hash = ((hash << 5) - hash) + raw.charCodeAt(i);
-    hash |= 0;
-  }
-  return 'a' + Math.abs(hash).toString(36);
+function getAnnouncementId(item) {
+  return item?.anchorId || generateAnnouncementAnchorId(item);
 }
+
+function openAnnouncementById(anchorId) {
+  if (!anchorId) return;
+
+  const match = announcements.value.find(item => getAnnouncementId(item) === anchorId);
+  if (!match) return;
+
+  expandedId.value = anchorId;
+  nextTick(() => {
+    const el = document.getElementById(anchorId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+}
+
+function handleMarqueeOpen(event) {
+  const anchorId = typeof event?.detail === 'string' ? event.detail : '';
+  openAnnouncementById(anchorId);
+}
+
+const categoryEntries = Object.entries(ANNOUNCEMENT_CATEGORY_META);
 
 const categoryOptions = [
   { value: 'all', label: '全部' },
-  { value: 'activity', label: '活动', iconClass: 'fas fa-calendar-check' },
-  { value: 'maintenance', label: '维护', iconClass: 'fas fa-wrench' },
-  { value: 'other', label: '其他', iconClass: 'fas fa-info-circle' },
+  ...categoryEntries.map(([value, meta]) => ({
+    value,
+    label: meta.label,
+    iconClass: meta.iconClass,
+  })),
 ];
 
-const categoryLabelMap = { activity: '活动', maintenance: '维护', other: '其他' };
-const categoryToneMap = { activity: 'success', maintenance: 'warning', other: 'purple' };
-const categoryIconMap = { activity: 'fas fa-calendar-check', maintenance: 'fas fa-wrench', other: 'fas fa-info-circle' };
+const categoryLabelMap = Object.fromEntries(categoryEntries.map(([value, meta]) => [value, meta.label]));
+const categoryIconMap = Object.fromEntries(categoryEntries.map(([value, meta]) => [value, meta.iconClass]));
 
 const filtered = computed(() => {
   return announcements.value.filter(item => {
@@ -112,7 +135,7 @@ function toggleItem(anchorId) {
 
 function shareItem(item, event) {
   event.stopPropagation();
-  const anchorId = generateAnchorId(item);
+  const anchorId = getAnnouncementId(item);
   const url = location.origin + location.pathname + '#' + anchorId;
   navigator.clipboard.writeText(url).then(() => {
     sharedId.value = anchorId;
@@ -133,9 +156,7 @@ function onFilterChange({ key, value }) {
 // ========== Editor ==========
 
 const categorySelectOptions = [
-  { value: 'activity', label: '活动' },
-  { value: 'maintenance', label: '维护' },
-  { value: 'other', label: '其他' },
+  ...categoryEntries.map(([value, meta]) => ({ value, label: meta.label })),
 ];
 
 function getSelectLabel(options, value) {
@@ -160,6 +181,7 @@ function openEditor(item) {
   edIntro.value = item ? item.intro : '';
   edTime.value = item ? item.time : new Date().toISOString().slice(0, 10);
   edCategory.value = item?.category || 'activity';
+  edMarquee.value = Boolean(item?.marquee);
   content.reset(item?.content || []);
   openSelects.value = {};
   editorOpen.value = true;
@@ -209,6 +231,7 @@ function generateJson() {
     intro: edIntro.value.trim(),
     time: edTime.value,
     category: edCategory.value,
+    marquee: edMarquee.value,
     content: content.getCleanItems().map(i => i.type === 'video' ? { type: 'video', content: parseBV(i.content) || i.content } : i),
   };
   jsonOutputText.value = JSON.stringify(obj, null, 4);
@@ -245,13 +268,13 @@ function generateJson() {
     <div v-if="filtered.length" class="timeline">
       <div
         v-for="(item, index) in filtered"
-        :key="generateAnchorId(item)"
-        :id="generateAnchorId(item)"
+        :key="getAnnouncementId(item)"
+        :id="getAnnouncementId(item)"
         :class="['timeline-item', `category-${item.category}`]"
       >
-        <div :class="['announcement-card', { expanded: expandedId === generateAnchorId(item) }]">
+        <div :class="['announcement-card', { expanded: expandedId === getAnnouncementId(item) }]">
           <!-- Summary -->
-          <button type="button" class="card-summary" @click="toggleItem(generateAnchorId(item))">
+          <button type="button" class="card-summary" @click="toggleItem(getAnnouncementId(item))">
             <div class="card-summary-main">
               <div class="card-summary-top">
                 <span :class="['category-badge', 'badge-' + item.category]">
@@ -285,10 +308,10 @@ function generateJson() {
             <div class="detail-action-btn-row">
               <button
                 type="button"
-                :class="['btn-share', { shared: sharedId === generateAnchorId(item) }]"
+                :class="['btn-share', { shared: sharedId === getAnnouncementId(item) }]"
                 @click="shareItem(item, $event)"
               >
-                <template v-if="sharedId === generateAnchorId(item)">✓ 已复制链接</template><template v-else><i class="fas fa-share-alt"></i> 分享</template>
+                <template v-if="sharedId === getAnnouncementId(item)">✓ 已复制链接</template><template v-else><i class="fas fa-share-alt"></i> 分享</template>
               </button>
               <button v-if="editMode" type="button" class="btn-edit" @click.stop="openEditor(item)">
                 <i class="fas fa-pen"></i> 编辑
@@ -313,6 +336,7 @@ function generateJson() {
                 <i :class="categoryIconMap[edCategory]"></i>
                 {{ categoryLabelMap[edCategory] }}
               </span>
+              <span v-if="edMarquee" class="preview-marquee-flag"><i class="fas fa-bullhorn"></i> 横幅展示</span>
               <span class="preview-time"><i class="far fa-clock"></i> {{ edTime || '未设置时间' }}</span>
             </div>
           </div>
@@ -361,6 +385,12 @@ function generateJson() {
                 </div>
               </div>
             </div>
+          </div>
+          <div class="form-group">
+            <label class="marquee-toggle">
+              <input type="checkbox" v-model="edMarquee">
+              <span>在导航栏下滚动横幅展示此公告</span>
+            </label>
           </div>
           <div class="form-group">
             <label>正文内容</label>
@@ -731,6 +761,35 @@ function generateJson() {
 .btn-edit:hover {
   background: var(--bl-accent);
   color: #fff;
+}
+
+.marquee-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--bl-text);
+  cursor: pointer;
+}
+
+.marquee-toggle input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--bl-accent);
+}
+
+.preview-marquee-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 113, 227, 0.08);
+  color: var(--bl-accent);
+  font-size: 12px;
+  font-weight: 700;
 }
 
 @media (max-width: 768px) {
