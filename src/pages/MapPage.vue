@@ -1,7 +1,7 @@
 <template>
   <iframe
     class="iframe-fullpage"
-    src="http://202.189.7.160:50222/#world:0:0:0:500:0:0:0:1:flat"
+    src="https://map.infstar.cn/#world:0:0:0:500:0:0:0:1:flat"
     frameborder="0"
     allowfullscreen
   ></iframe>

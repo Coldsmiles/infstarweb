@@ -132,7 +132,7 @@ applyTo: "src/**/*.vue, src/**/*.js, src/**/*.css, vite.config.js, package.json,
   - independent type and dimension filters
   - facility card layout and status indicator styles
   - detail modal content sections
-  - map link format to `http://202.189.7.160:50222/`
+  - map link format to `https://map.infstar.cn/`
   - contributor avatar tags from Minotar
   - Bilibili video block rendering in instructions and notes
   - direct link behavior that auto-opens the correct facility modal
