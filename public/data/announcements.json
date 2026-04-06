@@ -4,7 +4,7 @@
         "intro": "服务器官方网站首页封面图片征集投稿活动。",
         "time": "2026-03-10",
         "category": "activity",
-        "marquee": true,
+        "marquee": false,
         "content": [
             {
                 "type": "text",
@@ -69,7 +69,7 @@
         "intro": "服务器维护更新。",
         "time": "2026-03-10",
         "category": "maintenance",
-        "marquee": true,
+        "marquee": false,
         "content": [
             {
                 "type": "text",
