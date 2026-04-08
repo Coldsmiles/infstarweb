@@ -166,5 +166,32 @@
         }
     ],
     "notes": []
+    },
+    {
+    "title": "猪人塔加交易",
+    "intro": "在也不缺石英了！！！",
+    "type": "resource",
+    "dimension": "nether",
+    "status": "online",
+    "coordinates": {
+        "x": 0,
+        "y": 64,
+        "z": 0
+    },
+    "contributors": [
+        "luo_laoshi"
+    ],
+    "instructions": [
+        {
+            "type": "text",
+            "content": "【【我的世界】1.21.11最新版本大叔牌猪人塔的优化版本-哔哩哔哩】 https://b23.tv/mt6EuRQ"
+        }
+    ],
+    "notes": [
+        {
+            "type": "text",
+            "content": "信标不要挖，不然假人会饿死"
+        }
+    ]
     }
 ]
