@@ -87,6 +87,26 @@ def get_player_name(uuid):
             return response.json().get("name")
     except Exception:
         pass
+    
+    try:
+        response = get_session().get(
+            f"https://littleskin.cn/api/yggdrasil/sessionserver/session/minecraft/profile/{uuid}",
+            timeout=5,
+        )
+        if response.status_code == 200:
+            return response.json().get("username")
+    except Exception:
+        pass
+    
+    try:
+        response = get_session().get(
+            f"https://skin.infstar.cn/api/yggdrasil/sessionserver/session/minecraft/profile/{uuid}",
+            timeout=5,
+        )
+        if response.status_code == 200:
+            return response.json().get("username")
+    except Exception:
+        pass
 
     return "Unknown"
 
