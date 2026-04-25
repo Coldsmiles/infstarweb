@@ -94,7 +94,7 @@ def get_player_name(uuid):
             timeout=5,
         )
         if response.status_code == 200:
-            return response.json().get("username")
+            return response.json().get("name")
     except Exception:
         pass
     
@@ -104,7 +104,7 @@ def get_player_name(uuid):
             timeout=5,
         )
         if response.status_code == 200:
-            return response.json().get("username")
+            return response.json().get("name")
     except Exception:
         pass
 
