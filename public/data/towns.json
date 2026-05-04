@@ -33,7 +33,7 @@
     },
     "dimension": "overworld",
     "coordinatesSecret": true,
-    "scale": "medium",
+    "scale": "large",
     "townType": "building",
     "recruitment": "maybe",
     "founders": [
@@ -41,7 +41,8 @@
     ],
     "members": [
         "AS_QIAN",
-        "Coldsmiles_7"
+        "Coldsmiles_7",
+        "moyv_XwX"
     ],
     "introduction": [
         {

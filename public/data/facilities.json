@@ -54,25 +54,19 @@
     },
     {
     "title": "潜影贝农场",
-    "intro": "产量1300/H",
+    "intro": "来自bilibili：balllight_xy\n【【MC生电】简单潜影贝农场4.0 能自动补船的贝厂【1.17-1.21】-哔哩哔哩】 https://b23.tv/Xv2237J",
     "type": "resource",
     "dimension": "end",
     "status": "online",
     "coordinates": {
-        "x": -915,
-        "y": 61,
-        "z": 621
+        "x": -1152,
+        "y": 57,
+        "z": -1065
     },
     "contributors": [
-        "Ylsnif",
-        "yuan"
+        "Finsly"
     ],
-    "instructions": [
-        {
-            "type": "text",
-            "content": "挂机点挂机"
-        }
-    ],
+    "instructions": [],
     "notes": []
     },
     {
